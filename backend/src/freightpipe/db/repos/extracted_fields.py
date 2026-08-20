@@ -111,6 +111,46 @@ async def delete_by_document(conn: asyncpg.Connection, document_id: UUID) -> str
     )
 
 
+async def create_many(
+    conn: asyncpg.Connection,
+    fields: list[dict],
+) -> list[asyncpg.Record]:
+    """Bulk-insert extracted fields. Each dict needs document_id, field_name, confidence.
+    Optional: field_value, source_page, source_bbox, extraction_method."""
+    now = datetime.utcnow()
+    records = []
+    for f in fields:
+        field_id = uuid4()
+        bbox_json = json.dumps(f.get("source_bbox")) if f.get("source_bbox") else None
+        row = await conn.fetchrow(
+            """
+            INSERT INTO extracted_fields (id, document_id, field_name, field_value, confidence,
+                                          source_page, source_bbox, extraction_method, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9)
+            RETURNING *
+            """,
+            field_id,
+            f["document_id"],
+            f["field_name"],
+            f.get("field_value"),
+            f["confidence"],
+            f.get("source_page"),
+            bbox_json,
+            f.get("extraction_method"),
+            now,
+        )
+        records.append(row)
+    return records
+
+
+async def get_by_document_id(
+    conn: asyncpg.Connection,
+    document_id: UUID,
+) -> list[asyncpg.Record]:
+    """Fetch all extracted fields for a document (alias for list_by_document)."""
+    return await list_by_document(conn, document_id)
+
+
 async def delete(conn: asyncpg.Connection, field_id: UUID) -> bool:
     """Delete a single extracted field."""
     result = await conn.execute(

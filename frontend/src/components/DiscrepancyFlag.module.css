@@ -1,17 +1,32 @@
 .flag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  font-size: var(--text-sm);
   font-weight: 500;
-  background: var(--surface-raised);
-  color: var(--discrepancy);
-  border: 1px solid var(--discrepancy);
 }
 
-.icon {
-  font-size: 14px;
-  line-height: 1;
+.none {
+  color: var(--text-tertiary);
+}
+
+.alert {
+  color: var(--discrepancy);
+  border-left: var(--rail-width) solid var(--discrepancy);
+  padding-left: var(--space-2);
+}
+
+.rail {
+  /* Rail is applied via border-left on .alert */
+}
+
+.label {
+  font-family: var(--font-ui);
+}
+
+.amount {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--discrepancy);
 }

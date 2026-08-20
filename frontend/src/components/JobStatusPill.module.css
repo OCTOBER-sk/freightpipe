@@ -1,13 +1,13 @@
 .pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 12px;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
   font-weight: 500;
   background: var(--surface-raised);
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 .dot {
@@ -17,8 +17,38 @@
   background: currentColor;
 }
 
-.pill[data-status="queued"] { color: var(--text-tertiary); }
-.pill[data-status="processing"] { color: var(--accent); }
-.pill[data-status="completed"] { color: var(--confidence-high); }
-.pill[data-status="failed"] { color: var(--confidence-low); }
-.pill[data-status="review_required"] { color: var(--confidence-mid); }
+.text {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.stage {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.pill[data-rail-state="queued"] {
+  color: var(--text-tertiary);
+}
+
+.pill[data-rail-state="processing"] {
+  color: var(--accent);
+}
+
+.pill[data-rail-state="complete"] {
+  color: var(--confidence-high);
+}
+
+.pill[data-rail-state="failed"] {
+  color: var(--confidence-low);
+}
+
+.pill[data-rail-state="needs_review"] {
+  color: var(--confidence-mid);
+}
+
+.pill[data-rail-state="needs_llm_capacity"] {
+  color: var(--rail-capacity);
+}

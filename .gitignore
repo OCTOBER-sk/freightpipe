@@ -8,3 +8,5 @@ dist/
 .DS_Store
 *.log
 proof/
+backend/.venv/
+frontend/node_modules/

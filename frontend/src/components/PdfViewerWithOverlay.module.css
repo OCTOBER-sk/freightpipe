@@ -1,21 +1,52 @@
 .container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   width: 100%;
   height: 100%;
   min-height: 500px;
 }
 
-.viewer {
-  width: 100%;
-  height: 100%;
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
 }
 
-.iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 8px;
+.pageBtn {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--border);
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.viewer {
+  position: relative;
+  flex: 1;
+  overflow: auto;
   background: var(--surface);
+  border: 1px solid var(--border);
 }
 
 .overlay {
@@ -24,29 +55,19 @@
   pointer-events: none;
 }
 
-.fieldMarker {
+.highlight {
   position: absolute;
-  border: 2px solid transparent;
-  border-radius: 2px;
+  border: 2px solid var(--accent);
+  background: rgba(74, 124, 255, 0.12);
   pointer-events: auto;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
 }
 
-.fieldMarker:hover {
-  border-color: var(--accent);
-  background: rgba(74, 124, 255, 0.1);
+.highlight:hover {
+  background: rgba(74, 124, 255, 0.2);
 }
 
-.fieldMarker.active {
-  border-color: var(--accent);
-  background: rgba(74, 124, 255, 0.15);
-}
-
-.fieldMarker.discrepancy {
-  border-color: var(--discrepancy);
-}
-
-.fieldMarker.discrepancy:hover {
-  background: rgba(229, 90, 78, 0.1);
+.highlight.active {
+  border-color: var(--confidence-mid);
+  background: rgba(217, 164, 65, 0.15);
 }

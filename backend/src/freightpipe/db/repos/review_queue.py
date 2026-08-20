@@ -83,6 +83,72 @@ async def list_by_state(
     )
 
 
+async def list_paginated(
+    conn: asyncpg.Connection,
+    *,
+    state: str | None = None,
+    reason: str | None = None,
+    limit: int = 50,
+    cursor: str | None = None,
+) -> list[asyncpg.Record]:
+    """List review items with optional state/reason filter and cursor pagination."""
+    conditions = []
+    params: list = []
+    idx = 1
+
+    if state:
+        conditions.append(f"state = ${idx}")
+        params.append(state)
+        idx += 1
+    if reason:
+        conditions.append(f"reason = ${idx}")
+        params.append(reason)
+        idx += 1
+    if cursor:
+        conditions.append(f"created_at < ${idx}")
+        params.append(cursor)
+        idx += 1
+
+    where = " AND ".join(conditions) if conditions else "TRUE"
+    params.append(limit)
+
+    query = f"""
+        SELECT * FROM review_queue
+        WHERE {where}
+        ORDER BY created_at DESC LIMIT ${idx}
+    """
+    return await conn.fetch(query, *params)
+
+
+async def resolve(
+    conn: asyncpg.Connection,
+    item_id: UUID,
+    *,
+    resolution: str,
+    resolution_notes: str | None = None,
+    assigned_to: str | None = None,
+) -> asyncpg.Record | None:
+    """Resolve a review item (approved/corrected/escalated).
+    Sets state to 'resolved' for approved/corrected, 'escalated' for escalated."""
+    now = datetime.utcnow()
+    state = "escalated" if resolution == "escalated" else "resolved"
+    return await conn.fetchrow(
+        """
+        UPDATE review_queue
+        SET state = $2, assigned_to = COALESCE($3, assigned_to),
+            resolution_notes = COALESCE($4, resolution_notes),
+            resolved_at = $5
+        WHERE id = $1
+        RETURNING *
+        """,
+        item_id,
+        state,
+        assigned_to,
+        resolution_notes,
+        now,
+    )
+
+
 async def update_state(
     conn: asyncpg.Connection,
     item_id: UUID,

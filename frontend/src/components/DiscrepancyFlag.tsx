@@ -1,32 +1,44 @@
-import type { DiscrepancyFlag as DiscrepancyFlagType } from "@/types/backend";
+// DiscrepancyFlag — FRONTEND.md §4.2
+// 6 enum values from BACKEND.md §3.1 match_results.discrepancy_flag
+// none → gray dot + "No discrepancy"; non-none → red rail + plain English label
+import { DiscrepancyFlag as DiscrepancyFlagEnum } from "@/types/backend";
 import styles from "./DiscrepancyFlag.module.css";
 
 interface DiscrepancyFlagProps {
-  flag: DiscrepancyFlagType;
-  compact?: boolean;
+  flag: DiscrepancyFlagEnum;
+  amount?: number | null;
 }
 
-const FLAG_LABELS: Record<DiscrepancyFlagType, string> = {
-  mismatch: "Mismatch",
-  missing: "Missing",
-  extra: "Extra",
-  format_error: "Format Error",
-  low_confidence: "Low Confidence",
+const FLAG_LABELS: Record<DiscrepancyFlagEnum, string> = {
+  [DiscrepancyFlagEnum.NONE]: "No discrepancy",
+  [DiscrepancyFlagEnum.RATE_DELTA]: "Rate delta",
+  [DiscrepancyFlagEnum.MISSING_ACCESSORIAL]: "Missing accessorial",
+  [DiscrepancyFlagEnum.EXTRA_ACCESSORIAL]: "Extra accessorial",
+  [DiscrepancyFlagEnum.WEIGHT_VARIANCE]: "Weight variance",
+  [DiscrepancyFlagEnum.PIECES_VARIANCE]: "Pieces variance",
 };
 
-const FLAG_ICONS: Record<DiscrepancyFlagType, string> = {
-  mismatch: "≠",
-  missing: "∅",
-  extra: "+",
-  format_error: "⚠",
-  low_confidence: "↓",
-};
+function formatAmount(amount: number): string {
+  return amount >= 0 ? `+$${amount.toFixed(2)}` : `-$${Math.abs(amount).toFixed(2)}`;
+}
 
-export default function DiscrepancyFlag({ flag, compact = false }: DiscrepancyFlagProps) {
+export default function DiscrepancyFlag({ flag, amount }: DiscrepancyFlagProps) {
+  const isNone = flag === DiscrepancyFlagEnum.NONE;
+
   return (
-    <span className={styles.flag} data-flag={flag}>
-      <span className={styles.icon}>{FLAG_ICONS[flag]}</span>
-      {!compact && <span>{FLAG_LABELS[flag]}</span>}
+    <span
+      className={`${styles.flag} ${isNone ? styles.none : styles.alert}`}
+      data-flag={flag}
+      role="status"
+      aria-label={FLAG_LABELS[flag]}
+    >
+      {!isNone && <span className={styles.rail} />}
+      <span className={styles.label}>{FLAG_LABELS[flag]}</span>
+      {amount != null && !isNone && (
+        <span className={styles.amount} data-mono>
+          {formatAmount(amount)}
+        </span>
+      )}
     </span>
   );
 }

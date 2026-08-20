@@ -1,28 +1,29 @@
-import type { Webhook } from "@/types/backend";
+// WebhookStatusIndicator — FRONTEND.md §4.9
+// 3 states: delivered | pending | webhook_delivery_failed
+// Per BACKEND.md §4.2 retry schedule and terminal failure state
+import { WebhookStatus } from "@/types/backend";
 import styles from "./WebhookStatusIndicator.module.css";
 
 interface WebhookStatusIndicatorProps {
-  webhook: Webhook;
+  status: WebhookStatus;
 }
 
-export default function WebhookStatusIndicator({ webhook }: WebhookStatusIndicatorProps) {
-  const isHealthy = webhook.active && webhook.failure_count === 0;
-  const isFailing = webhook.failure_count > 0;
+const STATUS_LABELS: Record<WebhookStatus, string> = {
+  [WebhookStatus.DELIVERED]: "Delivered",
+  [WebhookStatus.PENDING]: "Pending",
+  [WebhookStatus.WEBHOOK_DELIVERY_FAILED]: "Failed",
+};
 
+export default function WebhookStatusIndicator({ status }: WebhookStatusIndicatorProps) {
   return (
     <span
       className={styles.indicator}
-      data-status={isHealthy ? "healthy" : isFailing ? "failing" : "inactive"}
-      title={
-        isHealthy
-          ? "Active and healthy"
-          : isFailing
-            ? `${webhook.failure_count} consecutive failures`
-            : "Inactive"
-      }
+      data-status={status}
+      role="status"
+      aria-label={`Webhook: ${STATUS_LABELS[status]}`}
     >
       <span className={styles.dot} />
-      {isHealthy ? "Healthy" : isFailing ? `${webhook.failure_count} failures` : "Inactive"}
+      <span className={styles.label}>{STATUS_LABELS[status]}</span>
     </span>
   );
 }

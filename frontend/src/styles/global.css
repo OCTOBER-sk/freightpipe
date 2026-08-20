@@ -1,12 +1,11 @@
 /* FreightPipe global styles
- * FRONTEND.md §1.3: Inter (UI), JetBrains Mono (data), 13px base
+ * FRONTEND.md §1.3: Inter (400/500/600), JetBrains Mono (400), 13px base
  * §1.6: No gradients, no shadows, no emoji, no generic SaaS aesthetics
  *
- * NOTE: Production should use @fontsource/inter + @fontsource/jetbrains-mono
- * for self-hosting (free-tier, no CDN dependency). CDN import used here as
- * placeholder until @fontsource is added to package.json.
+ * NOTE: @fontsource not in deps — using CDN import. Switch to @fontsource/inter
+ * + @fontsource/jetbrains-mono for self-hosting when deps are updated.
  */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap');
 @import './tokens.css';
 
 *,

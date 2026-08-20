@@ -90,6 +90,18 @@ async def update_status(
     )
 
 
+async def list_paginated(
+    conn: asyncpg.Connection,
+    account_id: UUID,
+    *,
+    status: str | None = None,
+    limit: int = 50,
+    cursor: str | None = None,
+) -> list[asyncpg.Record]:
+    """List jobs with optional status filter and cursor pagination (alias for list_by_account)."""
+    return await list_by_account(conn, account_id, status=status, limit=limit, cursor=cursor)
+
+
 async def list_by_account(
     conn: asyncpg.Connection,
     account_id: UUID,

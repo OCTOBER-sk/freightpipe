@@ -1,12 +1,12 @@
 .zone {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  min-height: 240px;
+  padding: var(--space-6);
   border: 2px dashed var(--border);
-  border-radius: 8px;
   background: var(--surface);
-  transition: border-color 0.15s, background 0.15s;
   cursor: pointer;
 }
 
@@ -14,9 +14,23 @@
   border-color: var(--accent);
 }
 
-.dragging {
+.dragover {
   border-color: var(--accent);
-  background: rgba(74, 124, 255, 0.05);
+  background: rgba(74, 124, 255, 0.04);
+}
+
+.file-selected {
+  border-style: solid;
+  border-color: var(--border);
+}
+
+.uploading {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.error {
+  border-color: var(--confidence-low);
 }
 
 .disabled {
@@ -28,31 +42,65 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   cursor: inherit;
+  width: 100%;
 }
 
 .input {
   display: none;
 }
 
-.icon {
-  font-size: 32px;
-}
-
 .text {
-  font-size: 14px;
+  font-size: var(--text-md);
   font-weight: 500;
   color: var(--text-primary);
 }
 
 .hint {
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--text-tertiary);
+  text-align: center;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  justify-content: center;
 }
 
 .filename {
-  font-size: 13px;
+  font-size: var(--text-base);
   color: var(--accent);
   font-weight: 500;
+  font-family: var(--font-mono);
+}
+
+.filesize {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.clear {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+
+.clear:hover {
+  color: var(--confidence-low);
+  border-color: var(--confidence-low);
+}
+
+.error {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--confidence-low);
+  text-align: center;
 }

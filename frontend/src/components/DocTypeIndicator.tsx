@@ -1,36 +1,34 @@
-import type { DocType } from "@/types/backend";
+// DocTypeIndicator — FRONTEND.md §4.3
+// Text labels for all 5 doc types (BACKEND.md §3.1)
+// Text label, not icon-only (rejects "generic SaaS" iconography per Hard Rules)
+import { DocType } from "@/types/backend";
 import styles from "./DocTypeIndicator.module.css";
 
 interface DocTypeIndicatorProps {
   docType: DocType;
-  showLabel?: boolean;
 }
 
 const DOC_TYPE_LABELS: Record<DocType, string> = {
-  bill_of_lading: "Bill of Lading",
-  commercial_invoice: "Commercial Invoice",
-  packing_list: "Packing List",
-  certificate_of_origin: "Certificate of Origin",
-  customs_declaration: "Customs Declaration",
-  delivery_order: "Delivery Order",
-  other: "Other",
+  [DocType.RATE_CON]: "Rate Confirmation",
+  [DocType.BOL]: "Bill of Lading",
+  [DocType.POD]: "Proof of Delivery",
+  [DocType.INVOICE]: "Carrier Invoice",
+  [DocType.UNKNOWN]: "Unclassified",
 };
 
 const DOC_TYPE_ABBREVS: Record<DocType, string> = {
-  bill_of_lading: "BOL",
-  commercial_invoice: "CI",
-  packing_list: "PL",
-  certificate_of_origin: "COO",
-  customs_declaration: "CD",
-  delivery_order: "DO",
-  other: "DOC",
+  [DocType.RATE_CON]: "RC",
+  [DocType.BOL]: "BOL",
+  [DocType.POD]: "POD",
+  [DocType.INVOICE]: "INV",
+  [DocType.UNKNOWN]: "---",
 };
 
-export default function DocTypeIndicator({ docType, showLabel = true }: DocTypeIndicatorProps) {
+export default function DocTypeIndicator({ docType }: DocTypeIndicatorProps) {
   return (
-    <span className={styles.indicator} data-doc-type={docType}>
+    <span className={styles.indicator} data-doc-type={docType} aria-label={DOC_TYPE_LABELS[docType]}>
       <span className={styles.abbrev}>{DOC_TYPE_ABBREVS[docType]}</span>
-      {showLabel && <span className={styles.label}>{DOC_TYPE_LABELS[docType]}</span>}
+      <span className={styles.label}>{DOC_TYPE_LABELS[docType]}</span>
     </span>
   );
 }

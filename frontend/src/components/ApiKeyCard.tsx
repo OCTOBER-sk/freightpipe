@@ -1,32 +1,51 @@
-import type { ApiKey } from "@/types/backend";
+// ApiKeyCard — FRONTEND.md §4.10
+// Props: label, maskedKey, createdAt, revokedAt?
+// Masked key display, create/revoke actions
 import styles from "./ApiKeyCard.module.css";
 
 interface ApiKeyCardProps {
-  apiKey: ApiKey;
-  onRevoke?: (keyId: string) => void;
+  label: string;
+  maskedKey: string;
+  createdAt: string;
+  revokedAt?: string | null;
+  onRevoke?: () => void;
 }
 
-export default function ApiKeyCard({ apiKey, onRevoke }: ApiKeyCardProps) {
+export default function ApiKeyCard({
+  label,
+  maskedKey,
+  createdAt,
+  revokedAt,
+  onRevoke,
+}: ApiKeyCardProps) {
+  const isRevoked = revokedAt != null;
+
   return (
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      data-revoked={isRevoked}
+      aria-label={`API key ${label}: ${isRevoked ? "revoked" : "active"}`}
+    >
       <div className={styles.header}>
-        <span className={styles.name}>{apiKey.name}</span>
-        <span className={styles.prefix} data-mono>{apiKey.key_prefix}••••••••</span>
+        <span className={styles.label}>{label}</span>
+        <span className={styles.key} data-mono>{maskedKey}</span>
       </div>
       <div className={styles.meta}>
-        <span>Created {new Date(apiKey.created_at).toLocaleDateString()}</span>
-        {apiKey.last_used_at && (
-          <span>Last used {new Date(apiKey.last_used_at).toLocaleDateString()}</span>
-        )}
-        {apiKey.expires_at && (
-          <span>Expires {new Date(apiKey.expires_at).toLocaleDateString()}</span>
+        <span className={styles.date}>
+          Created {new Date(createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+        </span>
+        {isRevoked && (
+          <span className={styles.revoked}>
+            Revoked {new Date(revokedAt!).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+          </span>
         )}
       </div>
-      {onRevoke && (
+      {!isRevoked && onRevoke && (
         <button
           className={styles.revoke}
-          onClick={() => onRevoke(apiKey.id)}
+          onClick={onRevoke}
           type="button"
+          aria-label={`Revoke API key ${label}`}
         >
           Revoke
         </button>

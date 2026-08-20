@@ -1,10 +1,9 @@
 .row {
   display: grid;
-  grid-template-columns: 1fr 2fr auto;
-  gap: 12px;
+  grid-template-columns: 140px 1fr auto;
+  gap: var(--space-3);
   align-items: center;
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: var(--space-2) var(--space-3);
   transition: background 0.1s;
 }
 
@@ -22,14 +21,16 @@
 }
 
 .name {
-  font-size: 12px;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--text-secondary);
+  font-family: var(--font-mono);
 }
 
 .value {
-  font-size: 13px;
+  font-size: var(--text-base);
   color: var(--text-primary);
+  font-family: var(--font-mono);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -38,10 +39,14 @@
 .meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
-.page {
-  font-size: 11px;
+.method {
+  font-size: var(--text-xs);
+  padding: 1px var(--space-1);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
   color: var(--text-tertiary);
+  font-family: var(--font-mono);
 }

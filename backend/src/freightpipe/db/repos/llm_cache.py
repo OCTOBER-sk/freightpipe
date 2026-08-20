@@ -56,6 +56,11 @@ async def set(
     )
 
 
+async def cleanup_expired(conn: asyncpg.Connection) -> str:
+    """Delete all expired cache entries (alias for delete_expired)."""
+    return await delete_expired(conn)
+
+
 async def delete_expired(conn: asyncpg.Connection) -> str:
     """Delete all expired cache entries."""
     now = datetime.utcnow()

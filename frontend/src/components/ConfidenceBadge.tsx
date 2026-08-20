@@ -1,28 +1,38 @@
-import { getConfidenceLevel, getConfidenceColor } from "@/config/confidence";
+// ConfidenceBadge — FRONTEND.md §4.1
+// Green (≥threshold), amber (≥threshold-0.10), red (below)
+// Always shows numeric + text label. WCAG aria-label.
+import {
+  getConfidenceLevel,
+  getConfidenceColor,
+  getConfidenceLabel,
+  type ConfidenceScope,
+} from "@/config/confidence";
 import styles from "./ConfidenceBadge.module.css";
 
 interface ConfidenceBadgeProps {
-  score: number;
+  value: number;
+  scope?: ConfidenceScope;
   size?: "sm" | "md" | "lg";
-  showLabel?: boolean;
 }
 
 export default function ConfidenceBadge({
-  score,
+  value,
+  scope = "field",
   size = "md",
-  showLabel = false,
 }: ConfidenceBadgeProps) {
-  const level = getConfidenceLevel(score);
+  const level = getConfidenceLevel(value, scope);
   const color = getConfidenceColor(level);
+  const label = getConfidenceLabel(level);
+  const pct = Math.round(value * 100);
 
   return (
     <span
       className={`${styles.badge} ${styles[size]}`}
       style={{ borderColor: color, color }}
-      title={`Confidence: ${(score * 100).toFixed(1)}%`}
+      aria-label={`Confidence: ${pct} percent, ${label}`}
     >
-      {(score * 100).toFixed(0)}%
-      {showLabel && <span className={styles.label}>{level}</span>}
+      <span className={styles.value}>{pct}%</span>
+      <span className={styles.label}>{label}</span>
     </span>
   );
 }

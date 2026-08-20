@@ -94,6 +94,16 @@ async def get_total_requests_today(
     return row["total"]
 
 
+async def get_by_date_range(
+    conn: asyncpg.Connection,
+    *,
+    start_date: date,
+    end_date: date,
+) -> list[asyncpg.Record]:
+    """Fetch usage logs for a date range (alias for list_range)."""
+    return await list_range(conn, start_date=start_date, end_date=end_date)
+
+
 async def list_range(
     conn: asyncpg.Connection,
     *,

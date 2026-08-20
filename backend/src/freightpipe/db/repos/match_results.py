@@ -85,6 +85,46 @@ async def update_discrepancy(
     )
 
 
+async def create_many(
+    conn: asyncpg.Connection,
+    results: list[dict],
+) -> list[asyncpg.Record]:
+    """Bulk-insert match results. Each dict needs shipment_id, line_item.
+    Optional: rate_con_value, bol_pod_value, invoice_value, discrepancy_flag, discrepancy_amount."""
+    now = datetime.utcnow()
+    records = []
+    for r in results:
+        result_id = uuid4()
+        row = await conn.fetchrow(
+            """
+            INSERT INTO match_results (id, shipment_id, line_item, rate_con_value,
+                                       bol_pod_value, invoice_value, discrepancy_flag,
+                                       discrepancy_amount, created_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING *
+            """,
+            result_id,
+            r["shipment_id"],
+            r["line_item"],
+            r.get("rate_con_value"),
+            r.get("bol_pod_value"),
+            r.get("invoice_value"),
+            r.get("discrepancy_flag", "none"),
+            r.get("discrepancy_amount"),
+            now,
+        )
+        records.append(row)
+    return records
+
+
+async def get_by_shipment_id(
+    conn: asyncpg.Connection,
+    shipment_id: UUID,
+) -> list[asyncpg.Record]:
+    """Fetch all match results for a shipment (alias for list_by_shipment)."""
+    return await list_by_shipment(conn, shipment_id)
+
+
 async def delete_by_shipment(conn: asyncpg.Connection, shipment_id: UUID) -> str:
     """Delete all match results for a shipment."""
     return await conn.execute(
