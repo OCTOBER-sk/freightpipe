@@ -1,0 +1,59 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.card:hover {
+  border-color: var(--accent);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.jobId {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.description {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.footer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.field {
+  font-size: 11px;
+  padding: 1px 6px;
+  background: var(--surface-raised);
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.resolved {
+  font-size: 11px;
+  color: var(--confidence-high);
+  font-weight: 500;
+}

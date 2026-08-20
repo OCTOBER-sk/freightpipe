@@ -1,0 +1,24 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.pill[data-status="queued"] { color: var(--text-tertiary); }
+.pill[data-status="processing"] { color: var(--accent); }
+.pill[data-status="completed"] { color: var(--confidence-high); }
+.pill[data-status="failed"] { color: var(--confidence-low); }
+.pill[data-status="review_required"] { color: var(--confidence-mid); }

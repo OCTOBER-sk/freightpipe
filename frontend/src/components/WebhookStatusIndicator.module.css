@@ -1,0 +1,22 @@
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.indicator[data-status="healthy"] { color: var(--confidence-high); }
+.indicator[data-status="healthy"] .dot { background: var(--confidence-high); }
+
+.indicator[data-status="failing"] { color: var(--confidence-low); }
+.indicator[data-status="failing"] .dot { background: var(--confidence-low); }
+
+.indicator[data-status="inactive"] { color: var(--text-tertiary); }
+.indicator[data-status="inactive"] .dot { background: var(--text-tertiary); }

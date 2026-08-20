@@ -1,0 +1,47 @@
+.row {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+
+.row:hover {
+  background: var(--surface-raised);
+}
+
+.row[role="button"] {
+  cursor: pointer;
+}
+
+.highlight {
+  background: rgba(74, 124, 255, 0.08);
+  border-left: 2px solid var(--accent);
+}
+
+.name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.value {
+  font-size: 13px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
