@@ -1,29 +1,84 @@
+// Jobs API — BACKEND.md §4.1
 import { apiGet, apiPost, apiFetch } from "./client";
-import type { Job, JobListResponse, DocType } from "@/types/backend";
+import type {
+  JobListResponse,
+  JobDetail,
+  JobResult,
+  JobSubmitResponse,
+} from "@/types/backend";
 
-export function listJobs(page = 1, pageSize = 20): Promise<JobListResponse> {
-  return apiGet<JobListResponse>(`/jobs?page=${page}&page_size=${pageSize}`);
+/**
+ * GET /v1/jobs — list jobs (paginated, cursor-based)
+ * §4.1: query params status, limit (default 50, max 200), cursor
+ */
+export function listJobs(params?: {
+  status?: string;
+  limit?: number;
+  cursor?: string;
+}): Promise<JobListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.status) searchParams.set("status", params.status);
+  if (params?.limit) searchParams.set("limit", String(params.limit));
+  if (params?.cursor) searchParams.set("cursor", params.cursor);
+  const qs = searchParams.toString();
+  return apiGet<JobListResponse>(`/jobs${qs ? `?${qs}` : ""}`);
 }
 
-export function getJob(jobId: string): Promise<Job> {
-  return apiGet<Job>(`/jobs/${jobId}`);
+/**
+ * GET /v1/jobs/{job_id} — poll job status
+ * §4.1: returns job_id, status, shipment_id, documents[], created_at, completed_at
+ */
+export function getJob(jobId: string): Promise<JobDetail> {
+  return apiGet<JobDetail>(`/jobs/${jobId}`);
 }
 
-export function submitJob(params: {
-  sourceFile: File;
-  targetFile: File;
-  sourceDocType?: DocType;
-  targetDocType?: DocType;
-}): Promise<Job> {
+/**
+ * GET /v1/jobs/{job_id}/result — full structured output
+ * §4.1: only meaningful once status is complete or needs_review
+ * Returns 409 if job not yet complete
+ */
+export function getJobResult(jobId: string): Promise<JobResult> {
+  return apiGet<JobResult>(`/jobs/${jobId}/result`);
+}
+
+/**
+ * POST /v1/documents — submit a document for processing (async)
+ * §4.1: multipart/form-data with file (PDF), optional webhook_url
+ * Optional Idempotency-Key header
+ * Returns 202 Accepted
+ */
+export function submitDocument(params: {
+  file: File;
+  webhookUrl?: string;
+  idempotencyKey?: string;
+}): Promise<JobSubmitResponse> {
   const formData = new FormData();
-  formData.append("source_file", params.sourceFile);
-  formData.append("target_file", params.targetFile);
-  if (params.sourceDocType) formData.append("source_doc_type", params.sourceDocType);
-  if (params.targetDocType) formData.append("target_doc_type", params.targetDocType);
+  formData.append("file", params.file);
+  if (params.webhookUrl) formData.append("webhook_url", params.webhookUrl);
 
-  return apiPost<Job>("/jobs", formData);
+  const headers: Record<string, string> = {};
+  if (params.idempotencyKey) {
+    headers["Idempotency-Key"] = params.idempotencyKey;
+  }
+
+  return apiPost<JobSubmitResponse>("/documents", formData, headers);
 }
 
-export function deleteJob(jobId: string): Promise<void> {
-  return apiFetch<void>(`/jobs/${jobId}`, { method: "DELETE" });
+/**
+ * GET /v1/documents/{document_id}/pdf — get signed URL for original PDF
+ * §4.1: returns signed R2 URL, valid for 5 minutes (300s)
+ */
+export function getDocumentPdfUrl(documentId: string): Promise<{ url: string; expires_in: number }> {
+  return apiGet<{ url: string; expires_in: number }>(`/documents/${documentId}/pdf`);
+}
+
+/**
+ * GET /v1/health — unauthenticated liveness check
+ * §4.1
+ */
+export function getHealth(): Promise<{ worker: string; processor: string }> {
+  return apiFetch<{ worker: string; processor: string }>("/health", {
+    method: "GET",
+    headers: { "Accept": "application/json" },
+  });
 }

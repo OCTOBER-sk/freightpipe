@@ -1,21 +1,32 @@
-import type { ApiError } from "@/types/backend";
+// API client — fetch wrapper with X-Api-Key injection, error handling, base URL
+// BACKEND.md §4: Auth via header X-Api-Key on every request
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "/api";
+import type { ErrorEnvelope } from "@/types/backend";
+
+const API_BASE = import.meta.env.VITE_API_BASE ?? "https://api.freightpipe.dev/v1";
 
 export class ApiClientError extends Error {
   status: number;
-  body: ApiError;
+  error: ErrorEnvelope;
 
-  constructor(status: number, body: ApiError) {
-    super(body.detail);
+  constructor(status: number, error: ErrorEnvelope) {
+    super(error.message);
     this.name = "ApiClientError";
     this.status = status;
-    this.body = body;
+    this.error = error;
   }
 }
 
 function getApiKey(): string | null {
   return localStorage.getItem("freightpipe_api_key");
+}
+
+export function setApiKey(key: string): void {
+  localStorage.setItem("freightpipe_api_key", key);
+}
+
+export function clearApiKey(): void {
+  localStorage.removeItem("freightpipe_api_key");
 }
 
 export async function apiFetch<T>(
@@ -41,13 +52,18 @@ export async function apiFetch<T>(
   });
 
   if (!res.ok) {
-    let body: ApiError;
+    let error: ErrorEnvelope;
     try {
-      body = await res.json();
+      const body = await res.json();
+      error = body.error ?? body;
     } catch {
-      body = { detail: res.statusText, status_code: res.status };
+      error = {
+        code: "internal_error",
+        message: res.statusText,
+        request_id: "",
+      };
     }
-    throw new ApiClientError(res.status, body);
+    throw new ApiClientError(res.status, error);
   }
 
   // Handle 204 No Content
@@ -62,10 +78,11 @@ export function apiGet<T>(path: string): Promise<T> {
   return apiFetch<T>(path, { method: "GET" });
 }
 
-export function apiPost<T>(path: string, body?: unknown): Promise<T> {
+export function apiPost<T>(path: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
   return apiFetch<T>(path, {
     method: "POST",
     body: body instanceof FormData ? body : JSON.stringify(body),
+    headers,
   });
 }
 

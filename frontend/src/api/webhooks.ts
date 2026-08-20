@@ -1,25 +1,11 @@
-import { apiGet, apiPost, apiDelete } from "./client";
-import type {
-  Webhook,
-  WebhookCreateRequest,
-} from "@/types/backend";
+// Webhooks API — BACKEND.md §4.1
+import { apiPost } from "./client";
+import type { WebhookTestResponse } from "@/types/backend";
 
-export function listWebhooks(): Promise<Webhook[]> {
-  return apiGet<Webhook[]>("/webhooks");
-}
-
-export function getWebhook(webhookId: string): Promise<Webhook> {
-  return apiGet<Webhook>(`/webhooks/${webhookId}`);
-}
-
-export function createWebhook(data: WebhookCreateRequest): Promise<Webhook> {
-  return apiPost<Webhook>("/webhooks", data);
-}
-
-export function deleteWebhook(webhookId: string): Promise<void> {
-  return apiDelete<void>(`/webhooks/${webhookId}`);
-}
-
-export function testWebhook(webhookId: string): Promise<{ success: boolean }> {
-  return apiPost<{ success: boolean }>(`/webhooks/${webhookId}/test`);
+/**
+ * POST /v1/webhooks/test — send test payload to verify connectivity
+ * §4.1: returns {delivered: true/false, status_code?, error?}
+ */
+export function testWebhook(webhookUrl: string): Promise<WebhookTestResponse> {
+  return apiPost<WebhookTestResponse>("/webhooks/test", { webhook_url: webhookUrl });
 }
