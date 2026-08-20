@@ -128,7 +128,7 @@ export default function Analytics() {
         <div className={styles.statCard}>
           <div className={styles.statLabel}>Total Jobs</div>
           <div className={styles.statValue}>{data.jobs.total}</div>
-          <div className={styles.statSub">
+          <div className={styles.statSub}>
             {data.jobs.completed} completed, {data.jobs.needs_review} review, {data.jobs.failed} failed
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function Analytics() {
         <div className={styles.statCard}>
           <div className={styles.statLabel}>LLM Calls</div>
           <div className={styles.statValue}>{data.llm_usage.total_calls}</div>
-          <div className={styles.statSub">
+          <div className={styles.statSub}>
             {Math.round(data.llm_usage.cache_hit_rate * 100)}% cache hit rate
           </div>
         </div>
