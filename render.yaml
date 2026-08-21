@@ -3,7 +3,7 @@ services:
     name: freightpipe-api
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && pip install ./backend
     startCommand: cd backend && gunicorn freightpipe.api.app:app -w 2 -k uvicorn.workers.UvicornWorker --host 0.0.0.0 --port $PORT
     envVars:
       - key: NEON_DATABASE_URL
