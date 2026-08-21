@@ -2,12 +2,14 @@ import { useState, type FormEvent } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { login as apiLogin } from "@/api/auth";
-import { ApiClientError } from "@/api/client";
+import { ApiClientError, getApiBaseUrl, setApiBase } from "@/api/client";
 import styles from "@/styles/auth.module.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [serverUrl, setServerUrl] = useState(getApiBaseUrl());
+  const [showServer, setShowServer] = useState(!getApiBaseUrl());
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -19,6 +21,11 @@ export default function LoginPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password) return;
+
+    // Save server URL if provided
+    if (serverUrl.trim()) {
+      setApiBase(serverUrl.trim());
+    }
 
     setLoading(true);
     setError("");
@@ -51,6 +58,26 @@ export default function LoginPage() {
         <div className={styles.authSubtitle}>Sign in to your account</div>
 
         <form onSubmit={handleSubmit}>
+          {showServer && (
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel} htmlFor="server">
+                Backend URL
+              </label>
+              <input
+                id="server"
+                type="url"
+                className={styles.formInput}
+                placeholder="https://freightpipe.onrender.com"
+                value={serverUrl}
+                onChange={(e) => setServerUrl(e.target.value)}
+                autoComplete="url"
+              />
+              <div className={styles.formHint}>
+                The URL of your FreightPipe backend (e.g. https://freightpipe.onrender.com)
+              </div>
+            </div>
+          )}
+
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="email">
               Email

@@ -1,6 +1,27 @@
 import type { ErrorEnvelope } from "@/types/backend";
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "";
+// API base URL: env var > localStorage > empty (relative)
+function getApiBase(): string {
+  const envBase = import.meta.env.VITE_API_BASE;
+  if (envBase) return envBase;
+  try {
+    return localStorage.getItem("freightpipe_api_base") ?? "";
+  } catch {
+    return "";
+  }
+}
+
+export function setApiBase(url: string) {
+  try {
+    localStorage.setItem("freightpipe_api_base", url.replace(/\/+$/, ""));
+  } catch {
+    // ignore
+  }
+}
+
+export function getApiBaseUrl(): string {
+  return getApiBase();
+}
 
 export class ApiClientError extends Error {
   status: number;
@@ -59,7 +80,7 @@ export async function apiFetch<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${getApiBase()}${path}`, {
     ...options,
     headers,
   });
