@@ -515,6 +515,44 @@ async def list_api_keys(
 
 
 # ---------------------------------------------------------------------------
+# 10.5 POST /v1/bootstrap — create first account + API key (no auth required, one-time only)
+# ---------------------------------------------------------------------------
+
+@router.post("/bootstrap", status_code=201)
+async def bootstrap_account(request: Request):
+    """Create the first account and API key. Only works if no accounts exist yet."""
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        existing = await conn.fetchval("SELECT COUNT(*) FROM accounts")
+        if existing > 0:
+            raise HTTPException(
+                status_code=409,
+                detail=_error("idempotency_conflict", "Account already exists. Use existing API key.", _request_id(request)),
+            )
+
+        body = await request.json()
+        account_name = body.get("name", "Default Account")
+
+        # Create account
+        account = await accounts_repo.create(conn, name=account_name)
+        account_id = account["id"]
+
+        # Create API key
+        raw_key = f"fp_live_{secrets.token_urlsafe(32)}"
+        key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
+        label = body.get("label", "Primary Key")
+        key_row = await api_keys_repo.create(conn, account_id=account_id, key_hash=key_hash, label=label)
+
+    return {
+        "account_id": str(account_id),
+        "key": raw_key,
+        "key_id": str(key_row["id"]),
+        "label": label,
+        "message": "Save this key — it cannot be retrieved again.",
+    }
+
+
+# ---------------------------------------------------------------------------
 # 11. POST /v1/api-keys — create key (raw key shown once)
 # ---------------------------------------------------------------------------
 
@@ -590,7 +628,8 @@ async def get_webhook_settings(
             detail=_error("job_not_found", "Account not found.", _request_id(request)),
         )
 
-    byok = account["llm_byok_keys"] or {}
+    byok_raw = account["llm_byok_keys"] or "{}"
+    byok = json.loads(byok_raw) if isinstance(byok_raw, str) else byok_raw
     webhook_url = byok.get("webhook_url")
     webhook_secret = byok.get("webhook_secret")
 
@@ -627,7 +666,8 @@ async def update_webhook_settings(
     pool = await get_pool()
     async with pool.acquire() as conn:
         account = await accounts_repo.get_by_id(conn, account_id)
-        byok = dict(account["llm_byok_keys"] or {})
+        byok_raw = account["llm_byok_keys"] or "{}"
+        byok = dict(json.loads(byok_raw) if isinstance(byok_raw, str) else byok_raw)
         byok["webhook_url"] = webhook_url
         if "webhook_secret" not in byok:
             byok["webhook_secret"] = f"whsec_{secrets.token_urlsafe(32)}"

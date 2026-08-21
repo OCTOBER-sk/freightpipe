@@ -8,7 +8,13 @@ dist/
 .DS_Store
 *.log
 proof/
+build/
 backend/.venv/
 frontend/node_modules/
+.wrangler/
+ZEUS_CONTEXT.md
+MIDAS_CONTEXT.md
+CODING_PLAN.md
+SOURCE_REFERENCE.md
+PLAN.md
 render-env.txt
-backend/.wrangler/
