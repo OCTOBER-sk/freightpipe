@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import secrets
 from datetime import date, datetime, timedelta, timezone
 from uuid import UUID, uuid4
@@ -12,6 +13,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, Header, Query, Requ
 from fastapi.responses import JSONResponse, Response
 
 from freightpipe.api.auth import get_account_id
+from freightpipe.api.auth_jwt import create_access_token, hash_password, verify_password
 from freightpipe.api.rate_limit import check_rate_limit
 from freightpipe.api.webhooks import dispatch_webhook, test_webhook
 from freightpipe.db.connection import get_pool
@@ -24,6 +26,7 @@ from freightpipe.db.repos import (
     match_results as match_results_repo,
     provider_usage_log as provider_usage_log_repo,
     review_queue as review_queue_repo,
+    users as users_repo,
 )
 from freightpipe.utils.config import MAX_UPLOAD_SIZE_MB
 
@@ -484,6 +487,200 @@ async def test_webhook_endpoint(
 @router.get("/health")
 async def health_check():
     return {"worker": "ok", "processor": "ok"}
+
+
+# ---------------------------------------------------------------------------
+# Auth endpoints — register, login, me, profile
+# ---------------------------------------------------------------------------
+
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+@router.post("/auth/register", status_code=201)
+async def register(request: Request):
+    body = await request.json()
+    email = (body.get("email") or "").strip().lower()
+    phone = body.get("phone")
+    company_name = (body.get("company_name") or "").strip()
+    password = body.get("password") or ""
+
+    if not email or not _EMAIL_RE.match(email):
+        raise HTTPException(
+            status_code=400,
+            detail=_error("validation_error", "Invalid email format.", _request_id(request)),
+        )
+    if len(password) < 8:
+        raise HTTPException(
+            status_code=400,
+            detail=_error("validation_error", "Password must be at least 8 characters.", _request_id(request)),
+        )
+    if not company_name:
+        raise HTTPException(
+            status_code=400,
+            detail=_error("validation_error", "company_name is required.", _request_id(request)),
+        )
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        existing = await users_repo.get_by_email(conn, email)
+        if existing:
+            raise HTTPException(
+                status_code=409,
+                detail=_error("email_taken", "Email already registered.", _request_id(request)),
+            )
+
+        pw_hash = hash_password(password)
+        user = await users_repo.create(
+            conn, email=email, phone=phone, company_name=company_name, password_hash=pw_hash,
+        )
+
+        account = await accounts_repo.create(conn, name=company_name)
+        account_id = account["id"]
+
+        await conn.execute(
+            "UPDATE accounts SET user_id = $1 WHERE id = $2",
+            user["id"], account_id,
+        )
+
+        raw_key = f"fp_live_{secrets.token_urlsafe(32)}"
+        key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
+        api_key_row = await api_keys_repo.create(
+            conn, account_id=account_id, key_hash=key_hash, label="Primary Key",
+        )
+
+    token = create_access_token(user["id"], account_id)
+
+    return JSONResponse(
+        status_code=201,
+        content={
+            "user_id": str(user["id"]),
+            "account_id": str(account_id),
+            "token": token,
+            "api_key": raw_key,
+        },
+    )
+
+
+@router.post("/auth/login")
+async def login(request: Request):
+    body = await request.json()
+    email = (body.get("email") or "").strip().lower()
+    password = body.get("password") or ""
+
+    if not email or not password:
+        raise HTTPException(
+            status_code=400,
+            detail=_error("validation_error", "email and password are required.", _request_id(request)),
+        )
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        user = await users_repo.get_by_email(conn, email)
+        if not user or not verify_password(password, user["password_hash"]):
+            raise HTTPException(
+                status_code=401,
+                detail=_error("invalid_credentials", "Invalid email or password.", _request_id(request)),
+            )
+        if not user["is_active"]:
+            raise HTTPException(
+                status_code=403,
+                detail=_error("account_disabled", "Account is disabled.", _request_id(request)),
+            )
+
+        account_row = await conn.fetchrow(
+            "SELECT id FROM accounts WHERE user_id = $1 LIMIT 1",
+            user["id"],
+        )
+        account_id = account_row["id"] if account_row else None
+
+    token = create_access_token(user["id"], account_id)
+
+    return {
+        "user_id": str(user["id"]),
+        "account_id": str(account_id),
+        "token": token,
+    }
+
+
+@router.get("/auth/me")
+async def get_me(request: Request, account_id: UUID = Depends(get_account_id)):
+    # Extract user_id from JWT — re-decode token
+    auth_header = request.headers.get("authorization", "")
+    user_id = None
+    if auth_header.startswith("Bearer "):
+        from freightpipe.api.auth_jwt import decode_access_token
+        try:
+            payload = decode_access_token(auth_header[7:])
+            user_id = UUID(payload.get("sub"))
+        except (ValueError, KeyError):
+            pass
+
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail=_error("unauthorized", "JWT token required for this endpoint.", _request_id(request)),
+        )
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        user = await users_repo.get_by_id(conn, user_id)
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail=_error("user_not_found", "User not found.", _request_id(request)),
+        )
+
+    return {
+        "user_id": str(user["id"]),
+        "email": user["email"],
+        "phone": user["phone"],
+        "company_name": user["company_name"],
+        "created_at": user["created_at"].isoformat(),
+    }
+
+
+@router.put("/auth/profile")
+async def update_profile(request: Request, account_id: UUID = Depends(get_account_id)):
+    auth_header = request.headers.get("authorization", "")
+    user_id = None
+    if auth_header.startswith("Bearer "):
+        from freightpipe.api.auth_jwt import decode_access_token
+        try:
+            payload = decode_access_token(auth_header[7:])
+            user_id = UUID(payload.get("sub"))
+        except (ValueError, KeyError):
+            pass
+
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail=_error("unauthorized", "JWT token required for this endpoint.", _request_id(request)),
+        )
+
+    body = await request.json()
+    phone = body.get("phone")
+    company_name = body.get("company_name")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        user = await users_repo.update_profile(
+            conn, user_id, phone=phone, company_name=company_name,
+        )
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail=_error("user_not_found", "User not found.", _request_id(request)),
+        )
+
+    return {
+        "user_id": str(user["id"]),
+        "email": user["email"],
+        "phone": user["phone"],
+        "company_name": user["company_name"],
+        "created_at": user["created_at"].isoformat(),
+    }
 
 
 # ---------------------------------------------------------------------------

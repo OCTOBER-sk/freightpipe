@@ -1,0 +1,149 @@
+.authPage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-base);
+  padding: 24px;
+}
+
+.authCard {
+  width: 420px;
+  max-width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 32px;
+}
+
+.authLogo {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.authLogoAccent {
+  color: var(--accent);
+}
+
+.authSubtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.formInput {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font-ui);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.formInput:focus {
+  border-color: var(--accent);
+}
+
+.formInput::placeholder {
+  color: var(--text-tertiary);
+}
+
+.formInputMono {
+  composes: formInput;
+  font-family: var(--font-mono);
+}
+
+.formRow {
+  display: flex;
+  gap: 12px;
+}
+
+.formRow > .formGroup {
+  flex: 1;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 10px;
+  background: var(--accent);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: opacity 0.15s;
+}
+
+.submitBtn:hover {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.errorBanner {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(229, 90, 78, 0.1);
+  border: 1px solid rgba(229, 90, 78, 0.3);
+  border-radius: 4px;
+  color: var(--confidence-low);
+  font-size: 12px;
+}
+
+.formHint {
+  margin-top: 16px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.formHint a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.formHint a:hover {
+  text-decoration: underline;
+}
+
+.validationError {
+  font-size: 11px;
+  color: var(--confidence-low);
+  margin-top: 4px;
+}
+
+@media (max-width: 480px) {
+  .authCard {
+    padding: 24px;
+  }
+  .formRow {
+    flex-direction: column;
+    gap: 0;
+  }
+}

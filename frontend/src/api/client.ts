@@ -1,9 +1,6 @@
-// API client — fetch wrapper with X-Api-Key injection, error handling, base URL
-// BACKEND.md §4: Auth via header X-Api-Key on every request
-
 import type { ErrorEnvelope } from "@/types/backend";
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "https://api.freightpipe.dev/v1";
+const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
 export class ApiClientError extends Error {
   status: number;
@@ -17,8 +14,20 @@ export class ApiClientError extends Error {
   }
 }
 
+function getToken(): string | null {
+  return localStorage.getItem("freightpipe_token");
+}
+
 function getApiKey(): string | null {
   return localStorage.getItem("freightpipe_api_key");
+}
+
+export function setToken(token: string): void {
+  localStorage.setItem("freightpipe_token", token);
+}
+
+export function clearToken(): void {
+  localStorage.removeItem("freightpipe_token");
 }
 
 export function setApiKey(key: string): void {
@@ -36,12 +45,16 @@ export async function apiFetch<T>(
   const headers = new Headers(options.headers);
   headers.set("Accept", "application/json");
 
+  const token = getToken();
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
   const apiKey = getApiKey();
   if (apiKey) {
     headers.set("X-Api-Key", apiKey);
   }
 
-  // Don't set Content-Type for FormData (browser sets boundary automatically)
   if (!(options.body instanceof FormData) && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
@@ -52,6 +65,18 @@ export async function apiFetch<T>(
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      clearToken();
+      if (
+        !window.location.pathname.startsWith("/login") &&
+        !window.location.pathname.startsWith("/register") &&
+        window.location.pathname !== "/" &&
+        !window.location.pathname.startsWith("/docs")
+      ) {
+        window.location.href = "/login";
+      }
+    }
+
     let error: ErrorEnvelope;
     try {
       const body = await res.json();
@@ -66,7 +91,6 @@ export async function apiFetch<T>(
     throw new ApiClientError(res.status, error);
   }
 
-  // Handle 204 No Content
   if (res.status === 204) {
     return undefined as T;
   }
