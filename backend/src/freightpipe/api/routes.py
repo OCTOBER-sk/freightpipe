@@ -553,7 +553,13 @@ async def register(request: Request):
     return JSONResponse(
         status_code=201,
         content={
-            "user_id": str(user["id"]),
+            "user": {
+                "id": str(user["id"]),
+                "email": user["email"],
+                "phone": user["phone"],
+                "company_name": user["company_name"],
+                "created_at": user["created_at"].isoformat(),
+            },
             "account_id": str(account_id),
             "token": token,
             "api_key": raw_key,
@@ -596,7 +602,13 @@ async def login(request: Request):
     token = create_access_token(user["id"], account_id)
 
     return {
-        "user_id": str(user["id"]),
+        "user": {
+            "id": str(user["id"]),
+            "email": user["email"],
+            "phone": user["phone"],
+            "company_name": user["company_name"],
+            "created_at": user["created_at"].isoformat(),
+        },
         "account_id": str(account_id),
         "token": token,
     }
@@ -831,10 +843,11 @@ async def get_webhook_settings(
     webhook_secret = byok.get("webhook_secret")
 
     if not webhook_url:
-        raise HTTPException(
-            status_code=404,
-            detail=_error("job_not_found", "No webhook configured for this account.", _request_id(request)),
-        )
+        return {
+            "webhook_url": "",
+            "webhook_secret": "",
+            "updated_at": account["created_at"].isoformat(),
+        }
 
     return {
         "webhook_url": webhook_url,

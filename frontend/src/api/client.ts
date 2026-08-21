@@ -5,7 +5,7 @@ function getApiBase(): string {
   const envBase = import.meta.env.VITE_API_BASE;
   if (envBase) return envBase;
   try {
-    return localStorage.getItem("freightpipe_api_base") ?? "https://freightpipe.onrender.com";
+    return localStorage.getItem("freightpipe_api_base") ?? "https://freightpipe.onrender.com/v1";
   } catch {
     return "";
   }
