@@ -1,6 +1,6 @@
 .landing {
-  background: #f8f9fb;
-  color: #1a1a2e;
+  background: #F7F6F3;
+  color: #0A0A0A;
   min-height: 100vh;
 }
 
@@ -10,7 +10,7 @@
   top: 0;
   z-index: 100;
   background: #fff;
-  border-bottom: 1px solid #e2e5ea;
+  border-bottom: 1px solid #E8E6E1;
 }
 
 .navInner {
@@ -30,7 +30,7 @@
 }
 
 .navLogoAccent {
-  color: #4A7CFF;
+  color: #E06070;
 }
 
 .navLinks {
@@ -42,13 +42,13 @@
 .navLink {
   font-size: 13px;
   font-weight: 500;
-  color: #5C636E;
+  color: #5E5C57;
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .navLink:hover {
-  color: #1a1a2e;
+  color: #0A0A0A;
   text-decoration: none;
 }
 
@@ -56,22 +56,22 @@
   font-size: 13px;
   font-weight: 600;
   color: #fff;
-  background: #4A7CFF;
+  background: #E06070;
   padding: 7px 16px;
   border-radius: 4px;
   text-decoration: none;
-  transition: opacity 0.15s;
+  transition: background 0.15s;
 }
 
 .navCta:hover {
-  opacity: 0.9;
+  background: #B88080;
   text-decoration: none;
 }
 
 /* ── Hero ── */
 .hero {
   background: #fff;
-  border-bottom: 1px solid #e2e5ea;
+  border-bottom: 1px solid #E8E6E1;
   padding: 80px 24px 64px;
 }
 
@@ -86,117 +86,79 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.2;
-  color: #1a1a2e;
+  color: #0A0A0A;
   margin-bottom: 16px;
 }
 
 .heroSubtitle {
   font-size: 16px;
   line-height: 1.6;
-  color: #5C636E;
+  color: #5E5C57;
   max-width: 600px;
-  margin: 0 auto 32px;
+  margin: 0 auto 48px;
 }
 
 .heroActions {
   display: flex;
   gap: 12px;
   justify-content: center;
-  margin-bottom: 48px;
 }
 
 .heroCta {
   padding: 12px 28px;
-  background: #4A7CFF;
+  background: #E06070;
   color: #fff;
   font-size: 14px;
   font-weight: 600;
   border-radius: 4px;
   text-decoration: none;
-  transition: opacity 0.15s;
+  transition: background 0.15s;
 }
 
 .heroCta:hover {
-  opacity: 0.9;
+  background: #B88080;
   text-decoration: none;
 }
 
 .heroSecondary {
   padding: 12px 28px;
   background: transparent;
-  color: #4A7CFF;
+  color: #E06070;
   font-size: 14px;
   font-weight: 600;
-  border: 1px solid #4A7CFF;
+  border: 1px solid #E06070;
   border-radius: 4px;
   text-decoration: none;
   transition: background 0.15s;
 }
 
 .heroSecondary:hover {
-  background: rgba(74, 124, 255, 0.06);
+  background: rgba(160, 112, 112, 0.06);
   text-decoration: none;
 }
 
-.heroPreview {
-  display: flex;
-  justify-content: center;
+/* ── Problem statement ── */
+.problem {
+  background: #F7F6F3;
+  padding: 48px 24px;
+  border-bottom: 1px solid #E8E6E1;
 }
 
-.previewCard {
-  width: 440px;
-  max-width: 100%;
-  background: #0E1013;
-  border: 1px solid #2A2F36;
-  border-radius: 6px;
-  padding: 0;
-  text-align: left;
-  overflow: hidden;
+.problemInner {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.previewHeader {
-  padding: 10px 16px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #9AA1AC;
-  border-bottom: 1px solid #2A2F36;
-  font-family: 'JetBrains Mono', monospace;
+.problemText {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #5E5C57;
 }
 
-.previewRow {
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  border-bottom: 1px solid #1D2126;
-  font-size: 12px;
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.previewRow:last-child {
-  border-bottom: none;
-}
-
-.previewField {
-  width: 140px;
-  color: #9AA1AC;
-  flex-shrink: 0;
-}
-
-.previewValue {
-  flex: 1;
-  color: #E8EAED;
-}
-
-.previewConf {
-  color: #3FB68B;
-  font-size: 11px;
-  margin-left: 12px;
-}
-
-.previewConfLow {
-  color: #E55A4E;
-  font-size: 11px;
-  margin-left: 12px;
+.problemText strong {
+  color: #0A0A0A;
+  font-weight: 600;
 }
 
 /* ── Sections ── */
@@ -208,22 +170,22 @@
 }
 
 .features {
-  background: #f8f9fb;
+  background: #F7F6F3;
 }
 
 .howItWorks {
   background: #fff;
-  border-top: 1px solid #e2e5ea;
-  border-bottom: 1px solid #e2e5ea;
+  border-top: 1px solid #E8E6E1;
+  border-bottom: 1px solid #E8E6E1;
 }
 
 .pricing {
-  background: #f8f9fb;
+  background: #F7F6F3;
 }
 
 .faq {
   background: #fff;
-  border-top: 1px solid #e2e5ea;
+  border-top: 1px solid #E8E6E1;
 }
 
 .sectionInner {
@@ -235,14 +197,14 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #1a1a2e;
+  color: #0A0A0A;
   text-align: center;
   margin-bottom: 8px;
 }
 
 .sectionSubtitle {
   font-size: 14px;
-  color: #5C636E;
+  color: #5E5C57;
   text-align: center;
   margin-bottom: 40px;
 }
@@ -257,26 +219,26 @@
 .featureCard {
   padding: 24px;
   background: #fff;
-  border: 1px solid #e2e5ea;
+  border: 1px solid #E8E6E1;
   border-radius: 4px;
 }
 
 .featureIcon {
   font-size: 20px;
-  color: #4A7CFF;
+  color: #E06070;
   margin-bottom: 12px;
 }
 
 .featureTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: #0A0A0A;
   margin-bottom: 6px;
 }
 
 .featureDesc {
   font-size: 13px;
-  color: #5C636E;
+  color: #5E5C57;
   line-height: 1.5;
 }
 
@@ -298,7 +260,7 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 12px;
-  background: #4A7CFF;
+  background: #E06070;
   color: #fff;
   font-size: 14px;
   font-weight: 700;
@@ -308,13 +270,13 @@
 .stepTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: #0A0A0A;
   margin-bottom: 6px;
 }
 
 .stepDesc {
   font-size: 13px;
-  color: #5C636E;
+  color: #5E5C57;
   line-height: 1.5;
 }
 
@@ -330,20 +292,20 @@
 .pricingCardHighlight {
   padding: 32px 24px;
   background: #fff;
-  border: 1px solid #e2e5ea;
+  border: 1px solid #E8E6E1;
   border-radius: 4px;
   text-align: center;
 }
 
 .pricingCardHighlight {
-  border-color: #4A7CFF;
+  border-color: #E06070;
   border-width: 2px;
 }
 
 .pricingTier {
   font-size: 14px;
   font-weight: 600;
-  color: #5C636E;
+  color: #5E5C57;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 8px;
@@ -352,13 +314,13 @@
 .pricingPrice {
   font-size: 32px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #0A0A0A;
   margin-bottom: 4px;
 }
 
 .pricingPeriod {
   font-size: 12px;
-  color: #5C636E;
+  color: #5E5C57;
   margin-bottom: 24px;
 }
 
@@ -371,9 +333,9 @@
 
 .pricingFeatures li {
   font-size: 13px;
-  color: #5C636E;
+  color: #5E5C57;
   padding: 6px 0;
-  border-bottom: 1px solid #f0f1f3;
+  border-bottom: 1px solid #E8E6E1;
 }
 
 .pricingFeatures li:last-child {
@@ -384,17 +346,17 @@
   display: inline-block;
   width: 100%;
   padding: 10px;
-  background: #4A7CFF;
+  background: #E06070;
   color: #fff;
   font-size: 13px;
   font-weight: 600;
   border-radius: 4px;
   text-decoration: none;
-  transition: opacity 0.15s;
+  transition: background 0.15s;
 }
 
 .pricingCta:hover {
-  opacity: 0.9;
+  background: #B88080;
   text-decoration: none;
 }
 
@@ -403,10 +365,10 @@
   width: 100%;
   padding: 10px;
   background: transparent;
-  color: #9AA1AC;
+  color: #9C9A94;
   font-size: 13px;
   font-weight: 600;
-  border: 1px solid #e2e5ea;
+  border: 1px solid #E8E6E1;
   border-radius: 4px;
   cursor: not-allowed;
 }
@@ -419,31 +381,31 @@
 
 .faqItem {
   padding: 20px 0;
-  border-bottom: 1px solid #e2e5ea;
+  border-bottom: 1px solid #E8E6E1;
 }
 
 .faqItem:first-child {
-  border-top: 1px solid #e2e5ea;
+  border-top: 1px solid #E8E6E1;
 }
 
 .faqQuestion {
   font-size: 14px;
   font-weight: 600;
-  color: #1a1a2e;
+  color: #0A0A0A;
   margin-bottom: 8px;
 }
 
 .faqAnswer {
   font-size: 13px;
-  color: #5C636E;
+  color: #5E5C57;
   line-height: 1.6;
 }
 
 /* ── Footer ── */
 .footer {
-  background: #0E1013;
+  background: #0A0A0A;
   padding: 40px 24px;
-  border-top: 1px solid #2A2F36;
+  border-top: 1px solid #1F1F1F;
 }
 
 .footerInner {
@@ -455,7 +417,7 @@
 .footerLogo {
   font-size: 18px;
   font-weight: 600;
-  color: #E8EAED;
+  color: #E8E6E1;
   margin-bottom: 16px;
 }
 
@@ -468,19 +430,19 @@
 
 .footerLinks a {
   font-size: 13px;
-  color: #9AA1AC;
+  color: #9C9A94;
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .footerLinks a:hover {
-  color: #E8EAED;
+  color: #E8E6E1;
   text-decoration: none;
 }
 
 .footerCopy {
   font-size: 12px;
-  color: #5C636E;
+  color: #5E5C57;
 }
 
 /* ── Responsive ── */

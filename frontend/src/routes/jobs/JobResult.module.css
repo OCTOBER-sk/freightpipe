@@ -41,7 +41,7 @@
   justify-content: space-between;
   padding: var(--space-3) var(--space-4);
   margin-bottom: var(--space-6);
-  background: rgba(217, 164, 65, 0.08);
+  background: rgba(196, 149, 58, 0.08);
   border: 1px solid var(--confidence-mid);
 }
 
@@ -61,7 +61,7 @@
 }
 
 .reviewBannerLink:hover {
-  background: rgba(74, 124, 255, 0.08);
+  background: var(--accent-subtle);
 }
 
 /* Documents section */
@@ -191,7 +191,7 @@
 
 .error {
   padding: var(--space-4);
-  background: rgba(229, 90, 78, 0.08);
+  background: rgba(184, 84, 80, 0.08);
   border: 1px solid var(--confidence-low);
   margin-bottom: var(--space-4);
 }

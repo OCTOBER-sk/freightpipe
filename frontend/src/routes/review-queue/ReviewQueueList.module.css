@@ -135,7 +135,7 @@
 }
 
 .reviewLink:hover {
-  background: rgba(74, 124, 255, 0.08);
+  background: rgba(160, 112, 112, 0.08);
 }
 
 .pagination {
@@ -193,7 +193,7 @@
   justify-content: space-between;
   padding: var(--space-3) var(--space-4);
   margin-bottom: var(--space-4);
-  background: rgba(229, 90, 78, 0.08);
+  background: rgba(184, 84, 80, 0.08);
   border: 1px solid var(--confidence-low);
   font-size: var(--text-sm);
   color: var(--confidence-low);
@@ -209,7 +209,7 @@
 }
 
 .retryBtn:hover {
-  background: rgba(229, 90, 78, 0.1);
+  background: rgba(184, 84, 80, 0.1);
 }
 
 /* Empty */

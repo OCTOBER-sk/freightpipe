@@ -84,7 +84,7 @@
 .stageLabel[data-state="current"] {
   color: var(--accent);
   border-color: var(--accent);
-  background: rgba(74, 124, 255, 0.08);
+  background: var(--accent-subtle);
 }
 
 .stageLabel[data-state="pending"] {
@@ -143,7 +143,7 @@
 /* Error state */
 .error {
   padding: var(--space-4);
-  background: rgba(229, 90, 78, 0.08);
+  background: rgba(184, 84, 80, 0.08);
   border: 1px solid var(--confidence-low);
   margin-bottom: var(--space-4);
 }
@@ -193,7 +193,7 @@
 }
 
 .refreshBtn:hover {
-  background: rgba(74, 124, 255, 0.08);
+  background: var(--accent-subtle);
 }
 
 /* Not found */

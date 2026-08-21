@@ -55,7 +55,7 @@
 }
 
 .submitBtn:hover {
-  opacity: 0.9;
+  background: var(--accent-hover);
 }
 
 .submitBtn:disabled {
@@ -179,8 +179,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: rgba(229, 90, 78, 0.1);
-  border: 1px solid rgba(229, 90, 78, 0.3);
+  background: rgba(184, 84, 80, 0.1);
+  border: 1px solid rgba(184, 84, 80, 0.3);
   border-radius: 4px;
   color: var(--confidence-low);
   font-size: 12px;
@@ -199,8 +199,8 @@
 
 .success {
   padding: 10px 16px;
-  background: rgba(63, 182, 139, 0.1);
-  border: 1px solid rgba(63, 182, 139, 0.3);
+  background: rgba(91, 138, 114, 0.1);
+  border: 1px solid rgba(91, 138, 114, 0.3);
   border-radius: 4px;
   color: var(--confidence-high);
   font-size: 12px;

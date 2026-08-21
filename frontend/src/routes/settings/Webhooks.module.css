@@ -110,7 +110,7 @@
 }
 
 .saveBtn:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--accent-hover);
 }
 
 .saveBtn:disabled {
@@ -168,7 +168,7 @@
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-sm);
   color: var(--confidence-high);
-  background: rgba(63, 182, 139, 0.08);
+  background: rgba(91, 138, 114, 0.08);
   border: 1px solid var(--confidence-high);
 }
 
@@ -177,7 +177,7 @@
   padding: var(--space-3) var(--space-4);
   font-size: var(--text-sm);
   color: var(--confidence-low);
-  background: rgba(229, 90, 78, 0.08);
+  background: rgba(184, 84, 80, 0.08);
   border: 1px solid var(--confidence-low);
 }
 

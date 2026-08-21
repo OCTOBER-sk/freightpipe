@@ -146,7 +146,7 @@
   margin-bottom: var(--space-4);
   font-size: var(--text-md);
   color: var(--confidence-mid);
-  background: rgba(217, 164, 65, 0.08);
+  background: rgba(196, 149, 58, 0.08);
   border: 1px solid var(--confidence-mid);
 }
 
@@ -216,7 +216,7 @@
 }
 
 .btnApprove:hover:not(:disabled) {
-  opacity: 0.9;
+  filter: brightness(1.1);
 }
 
 .btnCorrect {
@@ -225,7 +225,7 @@
 }
 
 .btnCorrect:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--accent-hover);
 }
 
 .spinner {
@@ -249,7 +249,7 @@
   margin-bottom: var(--space-4);
   font-size: var(--text-sm);
   color: var(--confidence-low);
-  background: rgba(229, 90, 78, 0.08);
+  background: rgba(184, 84, 80, 0.08);
   border: 1px solid var(--confidence-low);
 }
 

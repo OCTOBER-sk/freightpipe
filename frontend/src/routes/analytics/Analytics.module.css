@@ -132,7 +132,7 @@
 /* Error */
 .error {
   padding: var(--space-4);
-  background: rgba(229, 90, 78, 0.08);
+  background: rgba(184, 84, 80, 0.08);
   border: 1px solid var(--confidence-low);
   margin-bottom: var(--space-4);
 }
@@ -160,7 +160,7 @@
 }
 
 .retryBtn:hover {
-  background: rgba(229, 90, 78, 0.1);
+  background: rgba(184, 84, 80, 0.1);
 }
 
 /* Empty */
@@ -189,7 +189,7 @@
 }
 
 .emptyCta:hover {
-  opacity: 0.9;
+  background: var(--accent-hover);
 }
 
 @media (max-width: 768px) {

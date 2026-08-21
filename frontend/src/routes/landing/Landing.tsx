@@ -3,64 +3,58 @@ import styles from "./Landing.module.css";
 
 const FEATURES = [
   {
-    icon: "\u2699",
     title: "Multi-doc extraction",
-    desc: "Handles rate confirmations, BOLs, PODs, invoices, and merged PDFs in a single upload.",
+    desc: "Handles rate confirmations, BOLs, PODs, invoices, and merged PDFs in a single upload. Each document type uses field-specific extraction rules.",
   },
   {
-    icon: "\u26A0",
     title: "Confidence scoring",
-    desc: "Every field carries a confidence score. Low-confidence values are flagged for human review.",
+    desc: "Every extracted field carries a confidence score. Values below threshold are automatically routed to the review queue for human verification.",
   },
   {
-    icon: "\u25C6",
     title: "3-way match",
-    desc: "Automatically cross-checks line items across rate con, BOL/POD, and invoice documents.",
+    desc: "Cross-checks line items across rate confirmation, BOL/POD, and invoice documents. Discrepancies are flagged with specific field-level diffs.",
   },
   {
-    icon: "\u21BB",
     title: "Review queue",
-    desc: "Items needing attention are sorted oldest-first so nothing sits unresolved.",
+    desc: "Low-confidence and mismatched items are sorted oldest-first for operational urgency. Inline correction with approve, correct, or escalate actions.",
   },
   {
-    icon: "\u2630",
     title: "REST API",
-    desc: "Programmatic access via API keys. Submit documents and fetch structured JSON results.",
+    desc: "Programmatic access via API keys. Submit documents via POST, poll for results, and fetch structured JSON with field-level metadata.",
   },
   {
-    icon: "\u25B4",
     title: "Webhooks",
-    desc: "Get notified on job completion, review needed, or failure. Configure per-account or per-job.",
+    desc: "Get notified on job completion, review needed, or failure. Configure per-account defaults or per-job webhook URLs with signature verification.",
   },
 ];
 
 const STEPS = [
-  { num: "1", title: "Upload", desc: "Submit a PDF via the dashboard or API." },
-  { num: "2", title: "Extract", desc: "Documents are classified, split, and fields extracted using rules + LLM." },
+  { num: "1", title: "Upload", desc: "Submit a PDF via the dashboard or API. Supports up to 25MB per file." },
+  { num: "2", title: "Extract", desc: "Documents are classified, split if merged, and fields extracted using type-specific rules." },
   { num: "3", title: "Validate", desc: "Confidence scoring, 3-way matching, and discrepancy detection run automatically." },
-  { num: "4", title: "Review", desc: "Low-confidence or mismatched items go to the review queue. Everything else is ready to use." },
+  { num: "4", title: "Review", desc: "Flagged items go to the review queue. Everything else is ready to export as JSON." },
 ];
 
 const FAQ = [
   {
     q: "What document types does FreightPipe support?",
-    a: "Rate confirmations, bills of lading (BOL), proof of delivery (POD), and carrier invoices. Merged PDFs containing multiple document types are handled automatically.",
+    a: "Rate confirmations, bills of lading (BOL), proof of delivery (POD), and carrier invoices. Merged PDFs containing multiple document types are split and processed individually.",
   },
   {
     q: "How does the free tier work?",
-    a: "The free tier includes 100 documents per month with full access to all features. No credit card required to start.",
+    a: "The free tier includes 100 documents per month with full access to all features including API access, webhooks, and the review queue. No credit card required.",
   },
   {
     q: "What happens when confidence is low?",
-    a: "Fields below the confidence threshold are flagged and routed to the review queue. You can approve, correct, or escalate from the review interface.",
+    a: "Fields below the confidence threshold are flagged and routed to the review queue. You can approve the extracted value, correct it inline, or escalate for further review.",
   },
   {
     q: "Can I use FreightPipe programmatically?",
-    a: "Yes. Every account gets API keys. Submit documents via POST /v1/documents and poll for results or configure a webhook for notifications.",
+    a: "Yes. Every account gets API keys. Submit documents via POST /v1/documents and poll for results or configure a webhook for push notifications. Full API reference is in the docs.",
   },
   {
     q: "Is my data secure?",
-    a: "Documents are encrypted in transit and at rest. Each account is isolated. API keys are hashed at rest and only shown once at creation.",
+    a: "Documents are encrypted in transit and at rest. Each account is isolated. API keys are hashed at rest and only shown once at creation. We do not train on your data.",
   },
 ];
 
@@ -86,7 +80,7 @@ export default function Landing() {
       <section className={styles.hero}>
         <div className={styles.heroInner}>
           <h1 className={styles.heroTitle}>
-            Turn messy freight PDFs into clean JSON
+            Turn messy freight PDFs into structured data
           </h1>
           <p className={styles.heroSubtitle}>
             FreightPipe extracts, validates, and cross-checks fields from rate confirmations,
@@ -96,31 +90,16 @@ export default function Landing() {
             <Link to="/register" className={styles.heroCta}>Start for Free</Link>
             <Link to="/docs" className={styles.heroSecondary}>Read the Docs</Link>
           </div>
-          <div className={styles.heroPreview}>
-            <div className={styles.previewCard}>
-              <div className={styles.previewHeader}>Result: job_a91f... &mdash; Complete</div>
-              <div className={styles.previewRow}>
-                <span className={styles.previewField}>load_number</span>
-                <span className={styles.previewValue}>RC-48213</span>
-                <span className={styles.previewConf}>0.97</span>
-              </div>
-              <div className={styles.previewRow}>
-                <span className={styles.previewField}>linehaul_rate</span>
-                <span className={styles.previewValue}>$1,850.00</span>
-                <span className={styles.previewConf}>0.94</span>
-              </div>
-              <div className={styles.previewRow}>
-                <span className={styles.previewField}>pickup_date</span>
-                <span className={styles.previewValue}>2026-08-15</span>
-                <span className={styles.previewConf}>0.91</span>
-              </div>
-              <div className={styles.previewRow}>
-                <span className={styles.previewField}>fuel_surcharge</span>
-                <span className={styles.previewValue}>&mdash;</span>
-                <span className={styles.previewConfLow}>0.62</span>
-              </div>
-            </div>
-          </div>
+        </div>
+      </section>
+
+      <section className={styles.problem}>
+        <div className={styles.problemInner}>
+          <p className={styles.problemText}>
+            <strong>15% of carrier invoices contain errors.</strong> Manual keying
+            runs a 1-4% field error rate. FreightPipe extracts structured data from
+            freight documents and cross-checks them automatically. No TMS required.
+          </p>
         </div>
       </section>
 
@@ -133,7 +112,6 @@ export default function Landing() {
           <div className={styles.featureGrid}>
             {FEATURES.map((f) => (
               <div key={f.title} className={styles.featureCard}>
-                <div className={styles.featureIcon}>{f.icon}</div>
                 <h3 className={styles.featureTitle}>{f.title}</h3>
                 <p className={styles.featureDesc}>{f.desc}</p>
               </div>
@@ -189,7 +167,7 @@ export default function Landing() {
             </div>
             <div className={styles.pricingCard}>
               <div className={styles.pricingTier}>Enterprise</div>
-              <div className={styles.pricingPrice}>Coming soon</div>
+              <div className={styles.pricingPrice}>Contact us</div>
               <div className={styles.pricingPeriod}>custom</div>
               <ul className={styles.pricingFeatures}>
                 <li>Custom SLA</li>

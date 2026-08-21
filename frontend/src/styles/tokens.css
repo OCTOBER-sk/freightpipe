@@ -1,35 +1,42 @@
 :root {
-  /* ── Background (FRONTEND.md §1.2) ── */
-  --bg-base: #0E1013;
-  --surface: #16191D;
-  --surface-raised: #1D2126;
-  --border: #2A2F36;
+  /* ── Background ── */
+  --bg-base: #000000;
+  --surface: #0A0A0A;
+  --surface-raised: #141414;
+  --border: #1F1F1F;
 
-  /* ── Text (§1.2) ── */
-  --text-primary: #E8EAED;
-  --text-secondary: #9AA1AC;
-  --text-tertiary: #5C636E;
+  /* ── Text ── */
+  --text-primary: #E8E6E1;
+  --text-secondary: #9C9A94;
+  --text-tertiary: #5E5C57;
 
-  /* ── Accent (§1.2) ── */
-  --accent: #4A7CFF;
+  /* ── Accent ── */
+  --accent: #E06070;
+  --accent-hover: #E87888;
+  --accent-subtle: #E0607020;
 
-  /* ── Confidence (§1.2) ── */
-  --confidence-high: #3FB68B;
-  --confidence-mid: #D9A441;
-  --confidence-low: #E55A4E;
+  /* ── Confidence ── */
+  --confidence-high: #5B8A72;
+  --confidence-mid: #C4953A;
+  --confidence-low: #B85450;
 
-  /* ── Discrepancy (§1.2 — same red family as low-confidence) ── */
-  --discrepancy: #E55A4E;
+  /* ── Status ── */
+  --success: #5B8A72;
+  --warning: #C4953A;
+  --error: #B85450;
 
-  /* ── Status rail colors (§2.4) ── */
-  --rail-queued: #5C636E;
-  --rail-processing: #4A7CFF;
-  --rail-needs-review: #D9A441;
-  --rail-complete: #3FB68B;
-  --rail-failed: #E55A4E;
-  --rail-capacity: #D98441;
+  /* ── Discrepancy ── */
+  --discrepancy: #B85450;
 
-  /* ── Spacing — 8px base unit, §1.4: 4 / 8 / 12 / 16 / 24 / 32 / 48 ── */
+  /* ── Status rail colors ── */
+  --rail-queued: #5E5C57;
+  --rail-processing: #E06070;
+  --rail-needs-review: #C4953A;
+  --rail-complete: #5B8A72;
+  --rail-failed: #B85450;
+  --rail-capacity: #C4953A;
+
+  /* ── Spacing — 8px base unit ── */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -38,7 +45,7 @@
   --space-8: 32px;
   --space-12: 48px;
 
-  /* ── Typography scale (§1.3) ── */
+  /* ── Typography scale ── */
   --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
   --text-xs: 10px;
@@ -47,9 +54,9 @@
   --text-md: 15px;
   --text-lg: 20px;
 
-  /* ── Row height (§1.4 — balanced density) ── */
+  /* ── Row height ── */
   --row-height: 40px;
 
-  /* ── Confidence rail (§1.5 — signature element) ── */
+  /* ── Confidence rail ── */
   --rail-width: 3px;
 }

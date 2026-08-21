@@ -16,7 +16,7 @@
 
 .dragover {
   border-color: var(--accent);
-  background: rgba(74, 124, 255, 0.04);
+  background: var(--accent-subtle);
 }
 
 .file-selected {

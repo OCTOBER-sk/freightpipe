@@ -13,7 +13,7 @@
 
 .row:not([data-flag="none"]) {
   border-left-color: var(--discrepancy);
-  background: rgba(229, 90, 78, 0.04);
+  background: rgba(184, 84, 80, 0.04);
 }
 
 .lineItem {

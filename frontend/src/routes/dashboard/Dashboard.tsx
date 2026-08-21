@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { listJobs } from "@/api/jobs";
-import { JobStatus, PROCESSING_STAGES } from "@/types/backend";
+import { JobStatus } from "@/types/backend";
 import type { JobListItem } from "@/types/backend";
 import JobStatusPill from "@/components/JobStatusPill";
 import styles from "./Dashboard.module.css";
@@ -29,7 +29,9 @@ export default function Dashboard() {
   const total = jobs.length;
   const completed = jobs.filter((j) => j.status === JobStatus.COMPLETE).length;
   const needsReview = jobs.filter((j) => j.status === JobStatus.NEEDS_REVIEW).length;
+  const failed = jobs.filter((j) => j.status === JobStatus.FAILED).length;
   const recentJobs = jobs.slice(0, 5);
+  const accuracyPct = total > 0 ? Math.round(((completed) / total) * 100) : 0;
 
   if (isLoading) {
     return (
@@ -79,8 +81,8 @@ export default function Dashboard() {
         </div>
         <div className={styles.statCard}>
           <div className={styles.statLabel}>Accuracy</div>
-          <div className={styles.statValue}>94.2%</div>
-          <div className={styles.statSub}>average confidence</div>
+          <div className={styles.statValue}>{total > 0 ? `${accuracyPct}%` : "--"}</div>
+          <div className={styles.statSub}>completion rate</div>
         </div>
       </div>
 
@@ -88,18 +90,18 @@ export default function Dashboard() {
         <div className={styles.checklist}>
           <h3 className={styles.sectionTitle}>Getting Started</h3>
           <div className={styles.checkItem}>
-            <span className={styles.checkDone}>[x]</span>
+            <span className={styles.checkDone}>done</span>
             <span>Register your account</span>
           </div>
           <div className={styles.checkItem}>
-            <span className={styles.checkPending}>[ ]</span>
+            <span className={styles.checkPending}>pending</span>
             <span>
               Get your API key from{" "}
               <Link to="/settings">Settings</Link>
             </span>
           </div>
           <div className={styles.checkItem}>
-            <span className={styles.checkPending}>[ ]</span>
+            <span className={styles.checkPending}>pending</span>
             <span>
               Upload your first document from{" "}
               <Link to="/documents">Documents</Link>
@@ -111,7 +113,7 @@ export default function Dashboard() {
       <h3 className={styles.sectionTitle}>Recent Jobs</h3>
       {recentJobs.length === 0 ? (
         <div className={styles.empty}>
-          <p className={styles.emptyText}>No jobs yet.</p>
+          <p className={styles.emptyText}>No documents yet. Upload your first freight document to get started.</p>
         </div>
       ) : (
         <div className={styles.recentTable}>

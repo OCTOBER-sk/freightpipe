@@ -9,7 +9,7 @@
 /* Sidebar */
 .sidebar {
   width: 240px;
-  background: var(--surface);
+  background: #000000;
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -79,14 +79,8 @@
 }
 
 .navLinkActive {
-  background: var(--surface-raised);
+  background: var(--accent-subtle);
   color: var(--accent);
-}
-
-.navIcon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
 }
 
 .navBadge {
@@ -110,6 +104,15 @@
 .userInfo {
   font-size: 12px;
   color: var(--text-secondary);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userEmail {
+  font-size: 11px;
+  color: var(--text-tertiary);
   margin-bottom: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -238,7 +241,7 @@
 }
 
 .loginBtn:hover {
-  opacity: 0.9;
+  background: var(--accent-hover);
 }
 
 .loginBtn:disabled {
@@ -249,8 +252,8 @@
 .loginError {
   margin-top: 12px;
   padding: 8px 12px;
-  background: rgba(229, 90, 78, 0.1);
-  border: 1px solid rgba(229, 90, 78, 0.3);
+  background: rgba(184, 84, 80, 0.1);
+  border: 1px solid rgba(184, 84, 80, 0.3);
   border-radius: 4px;
   color: var(--confidence-low);
   font-size: 12px;

@@ -58,16 +58,16 @@
 .highlight {
   position: absolute;
   border: 2px solid var(--accent);
-  background: rgba(74, 124, 255, 0.12);
+  background: rgba(160, 112, 112, 0.12);
   pointer-events: auto;
   cursor: pointer;
 }
 
 .highlight:hover {
-  background: rgba(74, 124, 255, 0.2);
+  background: rgba(160, 112, 112, 0.2);
 }
 
 .highlight.active {
   border-color: var(--confidence-mid);
-  background: rgba(217, 164, 65, 0.15);
+  background: rgba(196, 149, 58, 0.15);
 }

@@ -3,12 +3,12 @@ import { useAuth } from "@/context/AuthContext";
 import styles from "@/styles/layout.module.css";
 
 const NAV_ITEMS = [
-  { to: "/dashboard", label: "Dashboard", icon: "\u25A0" },
-  { to: "/documents", label: "Documents", icon: "\u25B4" },
-  { to: "/review-queue", label: "Review Queue", icon: "\u25C6" },
-  { to: "/analytics", label: "Analytics", icon: "\u2582" },
-  { to: "/settings", label: "Settings", icon: "\u2699" },
-  { to: "/docs", label: "Docs", icon: "\u2630" },
+  { to: "/dashboard", label: "Dashboard" },
+  { to: "/documents", label: "Documents" },
+  { to: "/review-queue", label: "Review Queue" },
+  { to: "/analytics", label: "Analytics" },
+  { to: "/settings", label: "Settings" },
+  { to: "/docs", label: "Docs" },
 ];
 
 function getPageTitle(pathname: string): string {
@@ -46,7 +46,6 @@ export default function Layout() {
                   `${styles.navLink} ${isActive ? styles.navLinkActive : ""}`
                 }
               >
-                <span className={styles.navIcon}>{item.icon}</span>
                 {item.label}
               </NavLink>
             ))}
@@ -55,8 +54,11 @@ export default function Layout() {
 
         <div className={styles.sidebarFooter}>
           <div className={styles.userInfo}>
-            {user?.company_name ?? user?.email ?? "Account"}
+            {user?.company_name ?? "Account"}
           </div>
+          {user?.email && (
+            <div className={styles.userEmail}>{user.email}</div>
+          )}
           <button
             type="button"
             className={styles.logoutBtn}

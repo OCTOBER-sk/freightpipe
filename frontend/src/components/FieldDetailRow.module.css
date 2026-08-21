@@ -16,7 +16,7 @@
 }
 
 .highlight {
-  background: rgba(74, 124, 255, 0.08);
+  background: var(--accent-subtle);
   border-left: 2px solid var(--accent);
 }
 

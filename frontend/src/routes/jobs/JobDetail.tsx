@@ -175,7 +175,7 @@ export default function JobDetail() {
       )}
 
       {isCapacity && (
-        <div className={styles.error} style={{ borderColor: "var(--rail-capacity)", background: "rgba(217, 132, 65, 0.08)" }}>
+        <div className={styles.error} style={{ borderColor: "var(--rail-capacity)", background: "rgba(196, 149, 58, 0.08)" }}>
           <p className={styles.errorTitle} style={{ color: "var(--rail-capacity)" }}>
             Capacity Limited
           </p>
