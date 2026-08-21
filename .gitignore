@@ -10,3 +10,5 @@ dist/
 proof/
 backend/.venv/
 frontend/node_modules/
+render-env.txt
+backend/.wrangler/

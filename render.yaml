@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: freightpipe-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd backend && gunicorn freightpipe.api.routes:app -w 2 -k uvicorn.workers.UvicornWorker --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: NEON_DATABASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEYS
+        sync: false
+      - key: GEMINI_API_KEYS
+        sync: false
+      - key: GROQ_API_KEYS
+        sync: false
+      - key: WEBHOOK_HMAC_SECRET
+        generateValue: true
+      - key: BYOK_ENCRYPTION_KEY
+        generateValue: true
+      - key: WORKER_TO_PROCESSOR_SHARED_SECRET
+        generateValue: true
+      - key: MAX_UPLOAD_SIZE_MB
+        value: "25"
+      - key: LLM_DAILY_BUDGET_SOFT_CEILING_PCT
+        value: "90"
+      - key: JOB_RETRY_MAX_ATTEMPTS
+        value: "3"
+    healthCheckPath: /v1/health
+    autoDeploy: true

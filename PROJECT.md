@@ -89,10 +89,9 @@ No paid services. Everything must run on free tiers, self-hosted infra, or BYOK.
   fallback chain. Never hard-code one provider.
 
 **Hosting (FREE CLOUD ONLY — nothing runs on Sandy's VPS):**
-- Backend: Cloudflare Workers (free: 100K req/day, 10ms CPU/invocation, no cold starts) for the
-  API layer + lightweight orchestration. Heavy Python processing (PDF extraction, OCR) via a
-  free Python host: Koyeb free (1 nano service, always-on) or Render free (spins down after
-  15min idle, cold start ~30s). **VPS is NOT used for any backend service.**
+- Backend: **Render free** (750 hrs/month, 512MB RAM, auto-deploy from GitHub, no card needed).
+  Spins down after 15min idle, 30-60s cold start — fine for async job queue model.
+  Config: `render.yaml` in repo root. **VPS is NOT used.**
 - Frontend: Cloudflare Pages free (static + edge, unlimited bandwidth).
 - DB: Neon free (Postgres, 0.5 GB, 24/7 compute) / Supabase free / Turso free — managed cloud
   only, never on VPS.

@@ -79,8 +79,8 @@ Ingest → classify → page-split → extract (text or OCR/vision) → normaliz
 | Layer | Choice | One-line rationale |
 |---|---|---|
 | API/edge gateway | Cloudflare Workers (free) | 100K req/day, no cold starts, global edge — but 10ms CPU/invocation means it can only route/auth/validate, not process PDFs. |
-| Processing service | Python 3.12 + FastAPI on Koyeb free Instance | Free tier is the only evaluated option that runs an unrestricted Python process for real work (512MB RAM, 0.1 vCPU) — but see §2.2, it now scales to zero after 1h idle, not always-on. |
-| Processing fallback | Same FastAPI app on Render free | Documented fallback if Koyeb's single free Instance/org limit or CPU throttling becomes the bottleneck; 15-min idle spin-down, ~30–60s cold start. |
+| Processing service | Python 3.12 + FastAPI on **Render free** | 750 hrs/month, 512MB RAM, auto-deploy from GitHub via `render.yaml`. Spins down after 15min idle (30-60s cold start). No card needed. Fine for async job queue — submissions queue instantly, processing starts when service wakes. |
+| Processing fallback | Koyeb free Instance | Alternative if Render's 750hr/month limit is hit. Scale-to-zero after 1h idle. |
 | Primary DB | Neon Postgres (free) | Serverless Postgres, scale-to-zero compute, 0.5GB/project storage, 100 CU-hrs/month, data never deleted on limit — best fit for a job-state DB that's idle most of the time. |
 | Job queue | pg-boss on Neon Postgres | Avoids a second stateful service; Postgres-backed queue keeps infra count low, acceptable at this volume (long-tail brokers, not high-throughput). |
 | PDF storage | Neon Postgres BYTEA (free) | PDFs stored directly in the jobs table as BYTEA — zero extra services, zero card needed. Neon's 0.5GB free tier handles ~100-500 freight PDFs (typically 1-5MB each). |
@@ -729,8 +729,8 @@ Per `PROJECT.md` §9 (non-negotiable): build the labeled corpus **before** featu
 ```
 Frontend (not built here):  Cloudflare Pages (free)
 API/edge:                    Cloudflare Workers (free) — auth, routing, webhooks, rate limiting
-Processing:                  Koyeb free Instance (Python/FastAPI) — primary
-                              Render free (Python/FastAPI) — documented fallback/secondary
+Processing:                  **Render free** (Python/FastAPI) — primary, auto-deploy from GitHub
+                              Koyeb free (Python/FastAPI) — fallback
 DB:                           Neon Postgres (free) — jobs, extracted data, match results, queue (pg-boss)
 PDF storage:                   Neon Postgres BYTEA — PDFs stored in jobs table
 DNS/CDN/SSL:                     Cloudflare free plan

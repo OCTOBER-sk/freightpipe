@@ -42,9 +42,9 @@ DEFAULT_FALLBACK_CHAIN: list[str] = [
 
 # Provider-specific defaults
 PROVIDER_MODELS: dict[str, str] = {
-    Provider.OPENROUTER: "meta-llama/llama-3.1-8b-instruct:free",
-    Provider.GEMINI: "gemini-2.0-flash",
-    Provider.GROQ: "llama-3.1-8b-instant",
+    Provider.OPENROUTER: "nvidia/nemotron-3-ultra-550b-a55b:free",
+    Provider.GEMINI: "gemini-2.5-flash",
+    Provider.GROQ: "openai/gpt-oss-20b",
     Provider.BYOK: "",  # user-supplied
 }
 

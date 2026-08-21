@@ -11,7 +11,7 @@
 | Layer | Service | Free Tier | Card? |
 |---|---|---|---|
 | API edge | Cloudflare Workers | 100K req/day | No |
-| Processing | Koyeb free Instance | 512MB RAM, scale-to-zero after 1h | No |
+| Processing | **Render free** | 750 hrs/month, 512MB RAM, auto-deploy from GitHub | No |
 | DB + PDF storage | Neon Postgres | 0.5GB (DB + PDFs as BYTEA) | No |
 | LLM | OpenRouter free + Gemini Flash + Groq + BYOK | Pooled free tiers | No |
 | Frontend | Cloudflare Pages | Static, unlimited bandwidth | No |
@@ -93,7 +93,7 @@ JobList, JobSubmit, JobDetail, JobResult, ReviewQueueList, ReviewItemDetail, Ana
 | OpenRouter API key(s) | LLM router | OPENROUTER_API_KEYS |
 | Gemini API key(s) | LLM router + vision OCR | GEMINI_API_KEYS |
 | Groq API key(s) | LLM router fallback | GROQ_API_KEYS |
-| Koyeb deploy token | Backend hosting | — |
+| **Render account** | Backend hosting | render.com (free, no card, GitHub login) |
 | Cloudflare account | Frontend (Pages) + Workers | — |
 | Webhook HMAC secret | Webhook signing | WEBHOOK_HMAC_SECRET |
 | BYOK encryption key | Tenant BYOK keys | BYOK_ENCRYPTION_KEY |
