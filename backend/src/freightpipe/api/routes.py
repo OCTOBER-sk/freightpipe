@@ -9,7 +9,7 @@ from datetime import date, datetime, timedelta, timezone
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, File, HTTPException, Header, Query, Request, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from freightpipe.api.auth import get_account_id
 from freightpipe.api.rate_limit import check_rate_limit
@@ -81,12 +81,13 @@ async def submit_document(
                     },
                 )
 
-        r2_key = f"uploads/{account_id}/{uuid4()}.pdf"
+        source_filename = file.filename or "upload.pdf"
         try:
             job = await jobs_repo.create(
                 conn,
                 account_id=account_id,
-                source_r2_key=r2_key,
+                source_filename=source_filename,
+                pdf_data=content,
                 idempotency_key=idempotency_key,
                 webhook_url=webhook_url,
             )
@@ -416,7 +417,7 @@ async def resolve_review_item(
 
 
 # ---------------------------------------------------------------------------
-# 7. GET /v1/documents/{document_id}/pdf — signed R2 URL (5min TTL)
+# 7. GET /v1/documents/{document_id}/pdf — return PDF from Postgres BYTEA
 # ---------------------------------------------------------------------------
 
 @router.get("/documents/{document_id}/pdf")
@@ -445,12 +446,14 @@ async def get_document_pdf(
             detail=_error("job_not_found", "Document not found.", _request_id(request)),
         )
 
-    r2_key = doc["r2_key"]
-    bucket = os.environ.get("R2_BUCKET_NAME", "freightpipe-docs")
-    account = os.environ.get("R2_ACCOUNT_ID", "")
-    signed_url = f"https://{account}.r2.cloudflarestorage.com/{bucket}/{r2_key}?signed=true&expires=300"
+    pdf_data = job.get("pdf_data")
+    if not pdf_data:
+        raise HTTPException(
+            status_code=404,
+            detail=_error("pdf_not_found", "PDF data not found for this job.", _request_id(request)),
+        )
 
-    return {"url": signed_url, "expires_in": 300}
+    return Response(content=bytes(pdf_data), media_type="application/pdf")
 
 
 # ---------------------------------------------------------------------------

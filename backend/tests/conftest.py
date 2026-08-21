@@ -18,10 +18,6 @@ import pytest
 def mock_env(monkeypatch):
     """Set up environment variables for testing."""
     monkeypatch.setenv("NEON_DATABASE_URL", "postgresql://test:test@localhost/test")
-    monkeypatch.setenv("R2_ACCOUNT_ID", "test-account")
-    monkeypatch.setenv("R2_ACCESS_KEY_ID", "test-key")
-    monkeypatch.setenv("R2_SECRET_ACCESS_KEY", "test-secret")
-    monkeypatch.setenv("R2_BUCKET_NAME", "test-bucket")
     monkeypatch.setenv("OPENROUTER_API_KEYS", "or-key-1,or-key-2")
     monkeypatch.setenv("GEMINI_API_KEYS", "gem-key-1")
     monkeypatch.setenv("GROQ_API_KEYS", "groq-key-1")

@@ -1,4 +1,4 @@
-"""Tests for document ingestion — PDF validation, R2 upload, job creation."""
+"""Tests for document ingestion — PDF validation, job creation."""
 from __future__ import annotations
 
 import io
@@ -13,8 +13,6 @@ from freightpipe.pipeline.ingest import (
     validate_pdf,
     PDFValidationError,
     IdempotencyConflictError,
-    generate_r2_key,
-    generate_split_r2_key,
     MAX_UPLOAD_BYTES,
 )
 
@@ -71,33 +69,6 @@ class TestPDFValidation:
 
 
 # ---------------------------------------------------------------------------
-# R2 key generation tests
-# ---------------------------------------------------------------------------
-
-class TestR2KeyGeneration:
-    def test_generate_r2_key(self):
-        account_id = uuid4()
-        job_id = uuid4()
-        key = generate_r2_key(account_id, job_id, "test.pdf")
-        assert str(account_id) in key
-        assert str(job_id) in key
-        assert key.endswith("test.pdf")
-        assert key.startswith("uploads/")
-
-    def test_generate_r2_key_sanitizes_path(self):
-        key = generate_r2_key(uuid4(), uuid4(), "../../../etc/passwd")
-        assert ".." not in key
-        assert "/" not in key.split("/")[-1]  # filename part has no slashes
-
-    def test_generate_split_r2_key(self):
-        account_id = uuid4()
-        job_id = uuid4()
-        key = generate_split_r2_key(account_id, job_id, 0)
-        assert "split_0.pdf" in key
-        assert str(account_id) in key
-
-
-# ---------------------------------------------------------------------------
 # Idempotency tests
 # ---------------------------------------------------------------------------
 
@@ -110,27 +81,24 @@ class TestIdempotency:
 
 
 # ---------------------------------------------------------------------------
-# Job creation integration tests (mocked DB + R2)
+# Job creation integration tests (mocked DB)
 # ---------------------------------------------------------------------------
 
 class TestCreateJob:
     @pytest.mark.asyncio
     async def test_create_job_success(self, mock_conn, account_id):
-        """Test successful job creation with mocked DB and R2."""
+        """Test successful job creation with mocked DB."""
         job_id = uuid4()
         mock_conn.fetchrow = AsyncMock(return_value={
             "id": job_id,
             "account_id": account_id,
             "status": "queued",
             "created_at": __import__("datetime").datetime.utcnow(),
-            "source_r2_key": "",
+            "source_filename": "test.pdf",
+            "pdf_data": b"%PDF-1.4 test",
         })
-        mock_conn.execute = AsyncMock(return_value="UPDATE 1")
 
-        with patch("freightpipe.pipeline.ingest.upload_to_r2") as mock_upload, \
-             patch("freightpipe.pipeline.ingest.validate_pdf", return_value=(True, 1)):
-            mock_upload.return_value = "uploads/test.pdf"
-
+        with patch("freightpipe.pipeline.ingest.validate_pdf", return_value=(True, 1)):
             from freightpipe.pipeline.ingest import create_job
             result = await create_job(
                 mock_conn,

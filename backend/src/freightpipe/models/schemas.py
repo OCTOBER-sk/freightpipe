@@ -51,7 +51,7 @@ class Job(BaseModel):
     account_id: UUID
     idempotency_key: str | None = None
     status: JobStatus = JobStatus.QUEUED
-    source_r2_key: str
+    source_filename: str  # original filename (PDF stored in pdf_data column)
     shipment_id: UUID | None = None
     webhook_url: str | None = None
     error: dict | None = None
@@ -65,7 +65,6 @@ class Document(BaseModel):
     doc_type: DocType | None = None
     page_start: int
     page_end: int
-    r2_key: str
     extraction_method: str | None = None
     raw_text: str | None = None
     classification_confidence: float | None = None

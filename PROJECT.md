@@ -96,7 +96,7 @@ No paid services. Everything must run on free tiers, self-hosted infra, or BYOK.
 - Frontend: Cloudflare Pages free (static + edge, unlimited bandwidth).
 - DB: Neon free (Postgres, 0.5 GB, 24/7 compute) / Supabase free / Turso free — managed cloud
   only, never on VPS.
-- File storage: Cloudflare R2 free (10 GB, zero egress).
+- File storage: PDFs stored directly in Postgres (Neon) as BYTEA — zero extra services, zero card needed. Freight PDFs are typically 1-5MB; Neon's 0.5GB free tier handles ~100-500 PDFs.
 - Queue/jobs: Postgres-backed queue (pg-boss on Neon) or Upstash Redis free (10K cmd/day).
 - DNS/CDN: Cloudflare free plan (DNS, SSL, CDN, DDoS protection).
 

@@ -153,7 +153,7 @@ class TestSubmitDocument:
             conn = MagicMock()
             conn.fetchrow = AsyncMock(return_value=_record({
                 "id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                "status": "queued", "source_r2_key": "uploads/test.pdf",
+                "status": "queued", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                 "shipment_id": None, "webhook_url": None, "error": None,
                 "created_at": now, "updated_at": now, "completed_at": None,
             }))
@@ -206,7 +206,7 @@ class TestSubmitDocument:
             conn.fetchrow = AsyncMock(return_value=_record({
                 "id": job_id, "account_id": TEST_ACCOUNT_ID,
                 "idempotency_key": idem_key, "status": "complete",
-                "source_r2_key": "uploads/test.pdf", "shipment_id": None,
+                "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test", "shipment_id": None,
                 "webhook_url": None, "error": None,
                 "created_at": now, "updated_at": now, "completed_at": now,
             }))
@@ -241,7 +241,7 @@ class TestListJobs:
             conn.fetch = AsyncMock(return_value=[
                 _record({
                     "id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                    "status": "complete", "source_r2_key": "uploads/test.pdf",
+                    "status": "complete", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                     "shipment_id": None, "webhook_url": None, "error": None,
                     "created_at": now, "updated_at": now, "completed_at": now,
                 })
@@ -293,7 +293,7 @@ class TestGetJob:
             conn = MagicMock()
             conn.fetchrow = AsyncMock(return_value=_record({
                 "id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                "status": "complete", "source_r2_key": "uploads/test.pdf",
+                "status": "complete", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                 "shipment_id": None, "webhook_url": None, "error": None,
                 "created_at": now, "updated_at": now, "completed_at": now,
             }))
@@ -328,7 +328,7 @@ class TestGetJob:
             conn = MagicMock()
             conn.fetchrow = AsyncMock(return_value=_record({
                 "id": job_id, "account_id": other_account, "idempotency_key": None,
-                "status": "complete", "source_r2_key": "uploads/test.pdf",
+                "status": "complete", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                 "shipment_id": None, "webhook_url": None, "error": None,
                 "created_at": now, "updated_at": now, "completed_at": now,
             }))
@@ -351,7 +351,7 @@ class TestGetJobResult:
             conn = MagicMock()
             conn.fetchrow = AsyncMock(return_value=_record({
                 "id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                "status": "extracting", "source_r2_key": "uploads/test.pdf",
+                "status": "extracting", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                 "shipment_id": None, "webhook_url": None, "error": None,
                 "created_at": now, "updated_at": now, "completed_at": None,
             }))
@@ -372,7 +372,7 @@ class TestGetJobResult:
             conn = MagicMock()
             conn.fetchrow = AsyncMock(return_value=_record({
                 "id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                "status": "complete", "source_r2_key": "uploads/test.pdf",
+                "status": "complete", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                 "shipment_id": None, "webhook_url": None, "error": None,
                 "created_at": now, "updated_at": now, "completed_at": now,
             }))
@@ -380,7 +380,7 @@ class TestGetJobResult:
             call_count = {"n": 0}
             doc_record = _record({
                 "id": doc_id, "job_id": job_id, "doc_type": "rate_con",
-                "page_start": 1, "page_end": 1, "r2_key": "docs/test.pdf",
+                "page_start": 1, "page_end": 1,
                 "extraction_method": "text", "raw_text": None,
                 "classification_confidence": 0.95, "created_at": now,
             })
@@ -423,7 +423,7 @@ class TestReviewQueue:
             ])
             conn.fetchrow = AsyncMock(return_value=_record({
                 "id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                "status": "needs_review", "source_r2_key": "uploads/test.pdf",
+                "status": "needs_review", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                 "shipment_id": None, "webhook_url": None, "error": None,
                 "created_at": now, "updated_at": now, "completed_at": now,
             }))
@@ -453,14 +453,14 @@ class TestResolveReview:
                          "state": "pending", "assigned_to": None, "resolution_notes": None,
                          "created_at": now, "resolved_at": None}),
                 _record({"id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                         "status": "needs_review", "source_r2_key": "uploads/test.pdf",
+                         "status": "needs_review", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                          "shipment_id": None, "webhook_url": None, "error": None,
                          "created_at": now, "updated_at": now, "completed_at": now}),
                 _record({"id": item_id, "job_id": job_id, "reason": "low_confidence",
                          "state": "resolved", "assigned_to": None, "resolution_notes": "looks good",
                          "created_at": now, "resolved_at": now}),
                 _record({"id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                         "status": "complete", "source_r2_key": "uploads/test.pdf",
+                         "status": "complete", "source_filename": "test.pdf", "pdf_data": b"%PDF-1.4 test",
                          "shipment_id": None, "webhook_url": None, "error": None,
                          "created_at": now, "updated_at": now, "completed_at": now}),
             ])
@@ -493,30 +493,31 @@ class TestResolveReview:
 # ---------------------------------------------------------------------------
 
 class TestDocumentPdf:
-    def test_get_pdf_url_returns_200(self, app, client, auth_headers):
+    def test_get_pdf_returns_200(self, app, client, auth_headers):
         _override_auth(app)
         doc_id = uuid4()
         job_id = uuid4()
         now = datetime.now(timezone.utc)
+        pdf_bytes = b"%PDF-1.4 test content"
 
         with patch("freightpipe.api.routes.get_pool") as mock_get_pool:
             conn = MagicMock()
             conn.fetchrow = AsyncMock(side_effect=[
                 _record({"id": doc_id, "job_id": job_id, "doc_type": "rate_con",
-                         "page_start": 1, "page_end": 1, "r2_key": "docs/test.pdf",
+                         "page_start": 1, "page_end": 1,
                          "extraction_method": "text", "raw_text": None,
                          "classification_confidence": 0.95, "created_at": now}),
                 _record({"id": job_id, "account_id": TEST_ACCOUNT_ID, "idempotency_key": None,
-                         "status": "complete", "source_r2_key": "uploads/test.pdf",
+                         "status": "complete", "source_filename": "test.pdf",
+                         "pdf_data": pdf_bytes,
                          "shipment_id": None, "webhook_url": None, "error": None,
                          "created_at": now, "updated_at": now, "completed_at": now}),
             ])
             mock_get_pool.return_value = _make_mock_pool(conn)
             resp = client.get(f"/v1/documents/{doc_id}/pdf", headers=auth_headers)
         assert resp.status_code == 200
-        data = resp.json()
-        assert "url" in data
-        assert data["expires_in"] == 300
+        assert resp.content == pdf_bytes
+        assert resp.headers["content-type"] == "application/pdf"
 
     def test_get_pdf_not_found_returns_404(self, app, client, auth_headers):
         _override_auth(app)

@@ -12,7 +12,8 @@ async def create(
     conn: asyncpg.Connection,
     *,
     account_id: UUID,
-    source_r2_key: str,
+    source_filename: str,
+    pdf_data: bytes,
     idempotency_key: str | None = None,
     webhook_url: str | None = None,
     status: str = "queued",
@@ -22,16 +23,17 @@ async def create(
     now = datetime.utcnow()
     return await conn.fetchrow(
         """
-        INSERT INTO jobs (id, account_id, idempotency_key, status, source_r2_key,
-                          webhook_url, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $7)
+        INSERT INTO jobs (id, account_id, idempotency_key, status, source_filename,
+                          pdf_data, webhook_url, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8)
         RETURNING *
         """,
         job_id,
         account_id,
         idempotency_key,
         status,
-        source_r2_key,
+        source_filename,
+        pdf_data,
         webhook_url,
         now,
     )
@@ -43,6 +45,17 @@ async def get_by_id(conn: asyncpg.Connection, job_id: UUID) -> asyncpg.Record | 
         "SELECT * FROM jobs WHERE id = $1",
         job_id,
     )
+
+
+async def get_pdf_data(conn: asyncpg.Connection, job_id: UUID) -> bytes | None:
+    """Fetch just the PDF bytes for a job."""
+    row = await conn.fetchrow(
+        "SELECT pdf_data FROM jobs WHERE id = $1",
+        job_id,
+    )
+    if row is None:
+        return None
+    return row["pdf_data"]
 
 
 async def get_by_idempotency_key(

@@ -353,7 +353,7 @@ Owner selected "all" for MVP scope (Q6) — both the originally-essential and or
 **Correction workflow (resolving Q10):** Clicking the pencil icon on a field row turns that row's value into an inline text input, right there in the list — no modal for the common case (fixing a misread number). If a correction is structurally complex (e.g., editing a nested `accessorials[]` array entry, or a `shipper`/`consignee` object with multiple sub-fields), the same click instead opens a **focused edit panel that slides in from the right without leaving the screen** — not a full modal that obscures the PDF, since the PDF-vs-data comparison is the entire point of this screen and should never be interrupted. This satisfies "inline for quick fixes, modal-equivalent for complex ones" without ever hiding the source document.
 
 **Data bindings:**
-- Left pane: original PDF fetched via R2 (through a Worker-proxied signed URL — see §12 gap, `BACKEND.md` doesn't yet define this endpoint)
+- Left pane: original PDF fetched via `GET /v1/documents/{document_id}/pdf` (returns binary PDF data directly from Postgres)
 - Right pane: same `fields` structure as the result view, `source.bbox` drives the overlay highlight, synced to hover/focus state on the corresponding row
 - Approve → `POST /v1/review-queue/{id}/resolve` with `{"resolution": "approved"}`
 - Correct → same endpoint, `{"resolution": "corrected", "corrected_fields": {...}, "notes": "..."}`
@@ -534,7 +534,7 @@ Synced to `BACKEND.md` §4.3 error codes exactly:
 | **TypeScript** | The API contract in `BACKEND.md` is precise and typed (exact enums, exact schemas) — TS lets those enums be compile-time-checked types (`JobStatus`, `DiscrepancyFlag`, `ReviewReason`), so a frontend/backend enum drift becomes a build error, not a silent bug |
 | **CSS approach: CSS Modules + custom properties (not Tailwind)** | Justified by the design, not habit: this spec defines a small, deliberate token set (§1.2–1.4) meant to be referenced consistently, not composed ad hoc per-element the way utility classes encourage — a constrained token system is easier to audit for "does this still match BACKEND.md's thresholds" than scanning JSX for inline utility classes |
 | **State management: React Query (TanStack Query)** | The entire app is fundamentally "fetch/poll/mutate against a REST API" — React Query's built-in polling, caching, and mutation-with-invalidation patterns map directly onto §6's polling schedule and §5.4's resolve-then-refetch flow, without hand-rolling polling logic |
-| **PDF rendering: react-pdf (pdf.js wrapper)** | Free, no server-side rendering needed, renders directly from the R2-hosted PDF URL client-side, supports the bbox-overlay requirement in §3.6 via canvas coordinate mapping |
+| **PDF rendering: react-pdf (pdf.js wrapper)** | Free, no server-side rendering needed, renders directly from the API-returned PDF blob (Postgres BYTEA), supports the bbox-overlay requirement in §3.6 via canvas coordinate mapping |
 | **Charting: Recharts** | Free, React-native, sufficient for the line/bar/histogram needs in §7 (once backend endpoints exist) |
 | **Deployment: Cloudflare Pages** | Free, static, matches `BACKEND.md` §11.1's infra map exactly; no BFF/Workers-for-frontend layer needed since API-key auth is a client-supplied header, not a secret the frontend needs to hide (the key belongs to the account holder, entered by them, same trust model as any API-key-authenticated SaaS dashboard) |
 
@@ -610,7 +610,7 @@ freightpipe-frontend/
 | Job detail polling (§3.3, §6) | `GET /v1/jobs/{id}` | ✅ Defined, §4.1 |
 | Job result view (§3.4) | `GET /v1/jobs/{id}/result` | ✅ Defined, §4.1 — field-level mapping confirmed exact |
 | Review queue list (§3.5) | `GET /v1/review-queue` | ✅ Defined, §4.1 |
-| Review item detail — PDF source (§3.6) | `GET /v1/documents/{document_id}/pdf` | ✅ Defined, §4.1 — returns signed R2 URL (5min TTL) |
+| Review item detail — PDF source (§3.6) | `GET /v1/documents/{document_id}/pdf` | ✅ Defined, §4.1 — returns binary PDF data from Postgres BYTEA |
 | Review item — approve/correct (§3.6, §5.3) | `POST /v1/review-queue/{item_id}/resolve` | ✅ Defined, §4.1 — `approved`/`corrected`/`escalated` resolutions |
 | Review item — escalate (§3.6) | Same endpoint, `escalated` resolution | ✅ Defined, §4.1 — `escalated` value added to resolve schema |
 | Review item — claim/lock on open (§5.3) | Distinct claim endpoint or optimistic lock | **Deferred** — only matters once team mode (§2.1) is built; solo use has no contention |

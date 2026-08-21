@@ -18,7 +18,6 @@ from freightpipe.pipeline.validate import (
 from freightpipe.pipeline.ingest import (
     create_job,
     validate_pdf,
-    upload_to_r2,
     PDFValidationError,
     IdempotencyConflictError,
 )
@@ -72,7 +71,6 @@ __all__ = [
     "ValidationIssue",
     "create_job",
     "validate_pdf",
-    "upload_to_r2",
     "PDFValidationError",
     "IdempotencyConflictError",
     "match_shipment",

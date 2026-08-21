@@ -117,7 +117,7 @@ class TestJobsRepo:
     async def test_create(self):
         rec = {"id": uuid4(), "status": "queued"}
         conn = _mock_conn(rec)
-        result = await jobs.create(conn, account_id=uuid4(), source_r2_key="r2/key.pdf")
+        result = await jobs.create(conn, account_id=uuid4(), source_filename="test.pdf", pdf_data=b"%PDF-1.4 test")
         conn.fetchrow.assert_awaited_once()
         assert result["status"] == "queued"
 
@@ -172,7 +172,7 @@ class TestDocumentsRepo:
         rec = {"id": uuid4(), "doc_type": "rate_con"}
         conn = _mock_conn(rec)
         result = await documents.create(
-            conn, job_id=uuid4(), page_start=1, page_end=1, r2_key="r2/doc.pdf"
+            conn, job_id=uuid4(), page_start=1, page_end=1
         )
         conn.fetchrow.assert_awaited_once()
         assert result["doc_type"] == "rate_con"

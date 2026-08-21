@@ -13,7 +13,6 @@ async def create(
     job_id: UUID,
     page_start: int,
     page_end: int,
-    r2_key: str,
     doc_type: str | None = None,
     extraction_method: str | None = None,
     raw_text: str | None = None,
@@ -24,9 +23,9 @@ async def create(
     now = datetime.utcnow()
     return await conn.fetchrow(
         """
-        INSERT INTO documents (id, job_id, doc_type, page_start, page_end, r2_key,
+        INSERT INTO documents (id, job_id, doc_type, page_start, page_end,
                                extraction_method, raw_text, classification_confidence, created_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING *
         """,
         doc_id,
@@ -34,7 +33,6 @@ async def create(
         doc_type,
         page_start,
         page_end,
-        r2_key,
         extraction_method,
         raw_text,
         classification_confidence,
